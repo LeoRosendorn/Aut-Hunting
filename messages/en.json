@@ -1,0 +1,68 @@
+{
+  "common": {
+    "appName": "Aut-Hunting",
+    "tagline": "AI-powered talent hunting"
+  },
+  "nav": {
+    "login": "Log in",
+    "signup": "Create free account",
+    "logout": "Log out",
+    "dashboard": "My hunts",
+    "settings": "Settings",
+    "language": "Language",
+    "theme": "Toggle theme"
+  },
+  "landing": {
+    "badge": "100% free for recruiters",
+    "title": "Paste the Job Description. Get the profiles you need.",
+    "subtitle": "Aut-Hunting reads the JD, finds public LinkedIn profiles that fit and hands them to you ranked by match, with the outreach message ready.",
+    "cta": "Start for free",
+    "secondaryCta": "I already have an account",
+    "stepsTitle": "How it works",
+    "step1Title": "Upload the JD",
+    "step1Body": "Text, PDF, Word or a screenshot. AI extracts seniority, skills and location.",
+    "step2Title": "We search for you",
+    "step2Body": "We track down matching public profiles and drop duplicates.",
+    "step3Title": "Reach the best ones",
+    "step3Body": "20 to 30 profiles with a match score, reasons and a personalized message.",
+    "footnote": "Aut-Hunting never logs into your LinkedIn account or sends messages on your behalf."
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Log in to continue with your hunts.",
+    "signupTitle": "Create your account",
+    "signupSubtitle": "Free, in under a minute.",
+    "fullName": "Full name",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least 8 characters.",
+    "loginSubmit": "Log in",
+    "signupSubmit": "Create account",
+    "google": "Continue with Google",
+    "or": "or with your email",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?",
+    "checkEmailTitle": "Check your email",
+    "checkEmailBody": "We sent a link to {email} to confirm your account. If you don't see it, check spam.",
+    "errors": {
+      "invalidCredentials": "Wrong email or password.",
+      "emailNotConfirmed": "You haven't confirmed your email yet. Check your inbox.",
+      "weakPassword": "Password must be at least 8 characters.",
+      "invalidEmail": "Enter a valid email.",
+      "nameRequired": "Enter your name.",
+      "userExists": "An account with that email already exists.",
+      "rateLimited": "Too many attempts. Wait a few minutes and try again.",
+      "callback": "We couldn't complete the sign-in. Please try again.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "dashboard": {
+    "greeting": "Hi, {name}",
+    "subtitle": "All your talent searches in one place.",
+    "newHunt": "New hunt",
+    "quota": "{remaining} of {total} hunts left today",
+    "emptyTitle": "You haven't run any hunts yet",
+    "emptyBody": "Upload a Job Description and we'll return 20 to 30 profiles ranked by match.",
+    "comingSoon": "Coming soon"
+  }
+}

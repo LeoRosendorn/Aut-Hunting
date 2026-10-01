@@ -1,0 +1,68 @@
+{
+  "common": {
+    "appName": "Aut-Hunting",
+    "tagline": "Hunting de talentos com IA"
+  },
+  "nav": {
+    "login": "Entrar",
+    "signup": "Criar conta grátis",
+    "logout": "Sair",
+    "dashboard": "Meus huntings",
+    "settings": "Configurações",
+    "language": "Idioma",
+    "theme": "Alternar tema"
+  },
+  "landing": {
+    "badge": "100% grátis para recrutadoras",
+    "title": "Cole a Job Description. Receba os perfis que você procura.",
+    "subtitle": "O Aut-Hunting lê a JD, encontra perfis públicos do LinkedIn que combinam e entrega ordenados por afinidade, com a mensagem de contato pronta.",
+    "cta": "Começar grátis",
+    "secondaryCta": "Já tenho conta",
+    "stepsTitle": "Como funciona",
+    "step1Title": "Envie a JD",
+    "step1Body": "Texto, PDF, Word ou um print. A IA extrai senioridade, skills e localização.",
+    "step2Title": "Buscamos por você",
+    "step2Body": "Rastreamos perfis públicos compatíveis e removemos duplicados.",
+    "step3Title": "Contate os melhores",
+    "step3Body": "20 a 30 perfis com nota de afinidade, motivos e uma mensagem personalizada.",
+    "footnote": "O Aut-Hunting não acessa sua conta do LinkedIn nem envia mensagens por você."
+  },
+  "auth": {
+    "loginTitle": "Bem-vinda de volta",
+    "loginSubtitle": "Entre para continuar seus huntings.",
+    "signupTitle": "Crie sua conta",
+    "signupSubtitle": "Grátis, em menos de um minuto.",
+    "fullName": "Nome completo",
+    "email": "E-mail",
+    "password": "Senha",
+    "passwordHint": "Mínimo de 8 caracteres.",
+    "loginSubmit": "Entrar",
+    "signupSubmit": "Criar conta",
+    "google": "Continuar com o Google",
+    "or": "ou com seu e-mail",
+    "noAccount": "Não tem conta?",
+    "haveAccount": "Já tem conta?",
+    "checkEmailTitle": "Confira seu e-mail",
+    "checkEmailBody": "Enviamos um link para {email} para confirmar sua conta. Se não encontrar, veja o spam.",
+    "errors": {
+      "invalidCredentials": "E-mail ou senha incorretos.",
+      "emailNotConfirmed": "Você ainda não confirmou seu e-mail. Confira sua caixa de entrada.",
+      "weakPassword": "A senha deve ter pelo menos 8 caracteres.",
+      "invalidEmail": "Digite um e-mail válido.",
+      "nameRequired": "Digite seu nome.",
+      "userExists": "Já existe uma conta com esse e-mail.",
+      "rateLimited": "Muitas tentativas. Aguarde alguns minutos e tente de novo.",
+      "callback": "Não conseguimos concluir o login. Tente de novo.",
+      "generic": "Algo deu errado. Tente de novo."
+    }
+  },
+  "dashboard": {
+    "greeting": "Olá, {name}",
+    "subtitle": "Todas as suas buscas de talentos em um só lugar.",
+    "newHunt": "Novo hunting",
+    "quota": "{remaining} de {total} huntings disponíveis hoje",
+    "emptyTitle": "Você ainda não fez nenhum hunting",
+    "emptyBody": "Envie uma Job Description e devolvemos de 20 a 30 perfis ordenados por afinidade.",
+    "comingSoon": "Em breve"
+  }
+}
