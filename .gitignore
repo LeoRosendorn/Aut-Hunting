@@ -60,3 +60,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Excepción explícita (el bloque de create-next-app de arriba ignora .env*)
+!.env.example
