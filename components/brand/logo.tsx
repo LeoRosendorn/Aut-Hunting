@@ -18,7 +18,7 @@ export function Logo({ className, withText = true }: { className?: string; withT
       </svg>
       {withText && (
         <span className="text-lg tracking-tight">
-          Aut<span className="text-brand-indigo">-</span>Hunting
+          <span className="bg-gradient-to-br from-[#4f46e5] to-[#06b6d4] bg-clip-text text-transparent">AI</span>-Hunting
         </span>
       )}
     </span>

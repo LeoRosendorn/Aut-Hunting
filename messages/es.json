@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Aut-Hunting",
+    "appName": "AI-Hunting",
     "tagline": "Hunting de talento con IA"
   },
   "nav": {
@@ -15,7 +15,7 @@
   "landing": {
     "badge": "100% gratis para reclutadoras",
     "title": "Pegá la Job Description. Recibí los perfiles que buscás.",
-    "subtitle": "Aut-Hunting lee la JD, busca perfiles públicos de LinkedIn que encajan y te los entrega ordenados por afinidad, con el mensaje de contacto listo.",
+    "subtitle": "AI-Hunting lee la JD, busca perfiles públicos de LinkedIn que encajan y te los entrega ordenados por afinidad, con el mensaje de contacto listo.",
     "cta": "Empezar gratis",
     "secondaryCta": "Ya tengo cuenta",
     "stepsTitle": "Cómo funciona",
@@ -25,7 +25,7 @@
     "step2Body": "Rastreamos perfiles públicos que coinciden y descartamos duplicados.",
     "step3Title": "Contactá a los mejores",
     "step3Body": "20 a 30 perfiles con puntaje de afinidad, motivos y un mensaje personalizado.",
-    "footnote": "Aut-Hunting no ingresa a tu cuenta de LinkedIn ni envía mensajes por vos."
+    "footnote": "AI-Hunting no ingresa a tu cuenta de LinkedIn ni envía mensajes por vos."
   },
   "auth": {
     "loginTitle": "Bienvenida de nuevo",

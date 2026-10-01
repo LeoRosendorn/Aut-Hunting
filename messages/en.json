@@ -1,6 +1,6 @@
 {
   "common": {
-    "appName": "Aut-Hunting",
+    "appName": "AI-Hunting",
     "tagline": "AI-powered talent hunting"
   },
   "nav": {
@@ -15,7 +15,7 @@
   "landing": {
     "badge": "100% free for recruiters",
     "title": "Paste the Job Description. Get the profiles you need.",
-    "subtitle": "Aut-Hunting reads the JD, finds public LinkedIn profiles that fit and hands them to you ranked by match, with the outreach message ready.",
+    "subtitle": "AI-Hunting reads the JD, finds public LinkedIn profiles that fit and hands them to you ranked by match, with the outreach message ready.",
     "cta": "Start for free",
     "secondaryCta": "I already have an account",
     "stepsTitle": "How it works",
@@ -25,7 +25,7 @@
     "step2Body": "We track down matching public profiles and drop duplicates.",
     "step3Title": "Reach the best ones",
     "step3Body": "20 to 30 profiles with a match score, reasons and a personalized message.",
-    "footnote": "Aut-Hunting never logs into your LinkedIn account or sends messages on your behalf."
+    "footnote": "AI-Hunting never logs into your LinkedIn account or sends messages on your behalf."
   },
   "auth": {
     "loginTitle": "Welcome back",

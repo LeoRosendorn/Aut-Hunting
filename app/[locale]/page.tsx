@@ -24,7 +24,7 @@ export default async function LandingPage({ params }: PageProps<"/[locale]">) {
     <div className="flex min-h-dvh flex-col">
       <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link href="/" aria-label="Aut-Hunting">
+          <Link href="/" aria-label="AI-Hunting">
             <Logo />
           </Link>
           <nav className="flex items-center gap-1">
