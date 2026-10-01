@@ -30,10 +30,11 @@ export default async function LandingPage({ params }: PageProps<"/[locale]">) {
           <nav className="flex items-center gap-1">
             <LocaleSwitcher />
             <ThemeToggle />
-            <Link href="/login" className={cn(buttonVariants({ variant: "ghost" }), "hidden sm:inline-flex")}>
+            {/* En celular solo "Ingresar": "Empezar gratis" ya está en el hero. */}
+            <Link href="/login" className={buttonVariants({ variant: "ghost" })}>
               {nav("login")}
             </Link>
-            <Link href="/signup" className={buttonVariants()}>
+            <Link href="/signup" className={cn(buttonVariants(), "hidden sm:inline-flex")}>
               {nav("signup")}
             </Link>
           </nav>
