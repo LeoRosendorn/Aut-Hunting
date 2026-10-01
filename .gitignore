@@ -1,0 +1,21 @@
+# Obsidian
+.obsidian/
+
+# deps / build
+node_modules/
+.next/
+out/
+build/
+coverage/
+playwright-report/
+test-results/
+
+# env
+.env*
+!.env.example
+
+# misc
+.DS_Store
+*.log
+.vercel
+supabase/.temp/
