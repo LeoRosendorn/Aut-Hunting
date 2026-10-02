@@ -10,7 +10,8 @@ export function isTavilyConfigured() {
 }
 
 /**
- * Búsqueda "X-ray" restringida a linkedin.com (1 crédito por consulta con search_depth=basic).
+ * Búsqueda "X-ray" restringida a perfiles de linkedin.com (1 crédito por consulta con search_depth=basic).
+ * Es el respaldo de Exa: indexa pocos perfiles (1-3 por consulta en pruebas reales).
  * `country` es el nombre en inglés y en minúsculas que espera Tavily (ej. "argentina").
  */
 export async function searchLinkedin(query: string, country?: string): Promise<SearchResult[]> {
@@ -25,7 +26,8 @@ export async function searchLinkedin(query: string, country?: string): Promise<S
         query,
         search_depth: "basic",
         max_results: 20,
-        include_domains: ["linkedin.com"],
+        // "linkedin.com/in" (no "linkedin.com"): si no, Tavily devuelve casi solo publicaciones y ofertas.
+        include_domains: ["linkedin.com/in"],
         ...(country ? { country } : {}),
       }),
       signal: AbortSignal.timeout(TAVILY_TIMEOUT_MS),

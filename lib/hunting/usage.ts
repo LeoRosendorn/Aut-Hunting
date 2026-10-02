@@ -7,7 +7,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  */
 export const TAVILY_MONTHLY_CAP = Number.parseInt(process.env.TAVILY_MONTHLY_CAP ?? "", 10) || 950;
 
-type Provider = "tavily" | "gemini";
+type Provider = "tavily" | "exa" | "gemini";
 
 function startOfUtcMonth(now = new Date()) {
   return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1)).toISOString();
@@ -32,8 +32,8 @@ export async function remainingSearchesThisMonth(admin: SupabaseClient) {
  */
 export async function recordUsage(admin: SupabaseClient, userId: string, provider: Provider) {
   await admin.from("usage_events").insert(
-    provider === "tavily"
-      ? { user_id: userId, kind: "search_call", provider }
-      : { user_id: null, kind: "llm_call", provider: "gemini-pipeline" },
+    provider === "gemini"
+      ? { user_id: null, kind: "llm_call", provider: "gemini-pipeline" }
+      : { user_id: userId, kind: "search_call", provider },
   );
 }

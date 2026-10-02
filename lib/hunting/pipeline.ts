@@ -1,5 +1,6 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { isExaConfigured, searchPeople } from "@/lib/providers/exa";
 import { generateJson } from "@/lib/providers/gemini";
 import { searchLinkedin, type SearchResult } from "@/lib/providers/tavily";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -65,7 +66,7 @@ async function execute(admin: SupabaseClient, hunt: HuntRow) {
   await setStatus(admin, hunt.id, "searching", {
     requirements: { ...plan, country_code: countryCode },
     queries: plan.queries,
-    boolean_string: plan.boolean_string,
+    boolean_string: plan.boolean_string.slice(0, 600),
   });
 
   // 2) Buscar perfiles públicos (X-ray en linkedin.com/in).
@@ -97,11 +98,12 @@ async function execute(admin: SupabaseClient, hunt: HuntRow) {
         user_id: hunt.user_id,
         linkedin_url: p.url,
         name: p.name,
-        headline: p.headline,
+        // Exa a veces titula solo con el nombre: entonces se usa el titular que resume la IA.
+        headline: p.headline ?? (s.headline.trim().slice(0, 300) || null),
         snippet: p.snippet.slice(0, 600),
         score: s.score,
-        match_reasons: s.reasons,
-        gaps: s.gaps,
+        match_reasons: s.reasons.slice(0, 3).map((r) => r.slice(0, 140)),
+        gaps: s.gaps.slice(0, 3).map((g) => g.slice(0, 140)),
       };
     });
   if (rows.length === 0) throw new HuntError("NO_RESULTS");
@@ -118,10 +120,25 @@ async function collectProfiles(admin: SupabaseClient, hunt: HuntRow, plan: HuntP
 
   // Las consultas de la IA, y si no alcanzan, versiones más amplias (solo puesto + país).
   const broad = [plan.role_title, `${plan.role_title} ${plan.must_have_skills[0] ?? ""}`].map((q) => q.trim());
-  const queries = [...new Set([...plan.queries, ...broad])].slice(0, MAX_SEARCHES);
+  const queries = [...new Set([...plan.queries.slice(0, 6), ...broad])].slice(0, MAX_SEARCHES);
 
+  // Exa (categoría "people") encuentra muchos más perfiles; si falla o se queda sin crédito, sigue Tavily.
+  let useExa = isExaConfigured();
   for (const query of queries) {
     if (byUrl.size >= TARGET_PROFILES) break;
+
+    if (useExa) {
+      try {
+        const results = await searchPeople(query, countryCode);
+        await recordUsage(admin, hunt.user_id, "exa");
+        addProfiles(byUrl, results);
+        continue;
+      } catch (err) {
+        if (!(err instanceof HuntError)) throw err;
+        useExa = false;
+      }
+    }
+
     if ((await remainingSearchesThisMonth(admin)) <= 0) {
       if (byUrl.size > 0) break; // con lo que hay se puede puntuar
       throw new HuntError("SEARCH_QUOTA_EXHAUSTED");
