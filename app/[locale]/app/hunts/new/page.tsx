@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { NewHuntForm } from "@/components/hunts/new-hunt-form";
 import { Link } from "@/i18n/navigation";
-import { HUNTS_PER_DAY, remainingHuntsToday } from "@/lib/hunting/quota";
+import { huntQuota } from "@/lib/hunting/quota";
 import { createClient } from "@/lib/supabase/server";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/app/hunts/new">): Promise<Metadata> {
@@ -19,7 +19,7 @@ export default async function NewHuntPage({ params }: PageProps<"/[locale]/app/h
   const td = await getTranslations("dashboard");
   const th = await getTranslations("hunt");
 
-  const remaining = await remainingHuntsToday(await createClient());
+  const { remaining, total } = await huntQuota(await createClient());
 
   return (
     <div className="space-y-8">
@@ -34,8 +34,8 @@ export default async function NewHuntPage({ params }: PageProps<"/[locale]/app/h
         </div>
         <p className="text-sm text-muted-foreground">
           {remaining > 0
-            ? td("quotaLeft", { remaining, total: HUNTS_PER_DAY })
-            : td("quotaNone", { total: HUNTS_PER_DAY })}
+            ? td("quotaLeft", { remaining, total })
+            : td("quotaNone", { total })}
         </p>
       </div>
       <NewHuntForm remaining={remaining} />

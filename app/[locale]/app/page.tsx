@@ -5,7 +5,7 @@ import { StatusBadge, type HuntStatus } from "@/components/hunts/status-badge";
 import { LocalTime } from "@/components/local-time";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
-import { HUNTS_PER_DAY, remainingHuntsToday } from "@/lib/hunting/quota";
+import { huntQuota } from "@/lib/hunting/quota";
 import { createClient } from "@/lib/supabase/server";
 import { cn } from "@/lib/utils";
 
@@ -22,10 +22,10 @@ export default async function DashboardPage({ params }: PageProps<"/[locale]/app
 
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
-  const [{ data: profile }, { data: hunts }, remaining] = await Promise.all([
+  const [{ data: profile }, { data: hunts }, { remaining, total }] = await Promise.all([
     supabase.from("profiles").select("full_name").eq("id", auth.user!.id).maybeSingle(),
     supabase.from("hunts").select("id, title, status, created_at").order("created_at", { ascending: false }).limit(50),
-    remainingHuntsToday(supabase),
+    huntQuota(supabase),
   ]);
   const name = profile?.full_name?.split(" ")[0] || auth.user!.email?.split("@")[0] || "";
 
@@ -43,8 +43,8 @@ export default async function DashboardPage({ params }: PageProps<"/[locale]/app
           </Link>
           <p className="text-sm text-muted-foreground">
             {remaining > 0
-              ? t("quotaLeft", { remaining, total: HUNTS_PER_DAY })
-              : t("quotaNone", { total: HUNTS_PER_DAY })}
+              ? t("quotaLeft", { remaining, total })
+              : t("quotaNone", { total })}
           </p>
         </div>
       </div>

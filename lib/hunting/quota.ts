@@ -1,19 +1,25 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export const HUNTS_PER_DAY = Number(process.env.HUNTS_PER_USER_PER_DAY ?? 5);
-
-/** Inicio del día actual en UTC: el cupo diario se reinicia a las 00:00 UTC. */
-export function startOfUtcDay(now = new Date()) {
-  return new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+/**
+ * Cupo diario de huntings. La fuente de verdad es la base de datos
+ * (supabase/migrations/20261002010000_quota_enforcement.sql): el trigger rechaza el
+ * hunting que se pasa del límite aunque llegue por otro camino o en paralelo.
+ */
+export async function huntQuota(supabase: SupabaseClient) {
+  const { data, error } = await supabase.rpc("hunt_quota").single<{ remaining: number; total: number }>();
+  if (error) throw error;
+  return data;
 }
 
-/** Huntings que la usuaria todavía puede crear hoy (usa el cliente con su sesión: RLS filtra por usuaria). */
-export async function remainingHuntsToday(supabase: SupabaseClient) {
-  const { count, error } = await supabase
-    .from("hunts")
-    .select("id", { head: true, count: "exact" })
-    .gte("created_at", startOfUtcDay().toISOString());
+/** Reserva un uso de IA para la usuaria logueada; false si ya usó los de hoy. */
+export async function consumeAiCall(supabase: SupabaseClient) {
+  const { data, error } = await supabase.rpc("consume_ai_call");
   if (error) throw error;
-  return Math.max(0, HUNTS_PER_DAY - (count ?? 0));
+  return data === true;
+}
+
+/** El trigger de cupo lanza `DAILY_LIMIT` (P0001) cuando la usuaria ya creó los de hoy. */
+export function isDailyLimitError(error: { code?: string; message?: string } | null) {
+  return error?.code === "P0001" && error.message?.includes("DAILY_LIMIT") === true;
 }
