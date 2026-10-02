@@ -7,7 +7,7 @@ Orden recomendado: Supabase → Google OAuth → variables locales → Vercel �
 1. Crear cuenta en <https://supabase.com> (se puede entrar con GitHub) → **New project**.
    - Nombre: `ai-hunting` · Región: la más cercana (ej. *South America (São Paulo)*) · Plan **Free**.
    - Guardar la contraseña de la base en un gestor de contraseñas.
-2. **SQL Editor → New query** → pegar el contenido de `supabase/migrations/20261001000000_init.sql` → **Run**.
+2. **SQL Editor → New query** → pegar y ejecutar (**Run**), en orden, cada archivo de `supabase/migrations/` (`20261001000000_init.sql`, `20261002000000_hunt_country_auto.sql`, …).
 3. **Project Settings → API Keys**: copiar
    - Project URL → `NEXT_PUBLIC_SUPABASE_URL`
    - Publishable key (`sb_publishable_…`) → `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
@@ -42,7 +42,12 @@ npm run dev                  # http://localhost:3000
 3. Deploy. Después, volver a Supabase → URL Configuration y agregar la URL de Vercel (paso 1.5).
 4. El cron diario de `vercel.json` mantiene activo el proyecto de Supabase (se pausa tras 7 días sin uso).
 
-## 5. SMTP gratuito para los emails de confirmación
+## 5. Gemini (leer imágenes y PDF escaneados; luego, el puntaje de perfiles)
+
+1. <https://aistudio.google.com/apikey> → **Create API key** (capa gratuita, sin tarjeta).
+2. Cargar `GEMINI_API_KEY` en `.env.local` y en Vercel → Environment Variables. Sin esta clave, la app acepta texto, PDF con texto, Word y TXT, y rechaza imágenes con un aviso claro.
+
+## 6. SMTP gratuito para los emails de confirmación
 
 El SMTP incluido en Supabase tiene un límite por hora muy bajo. Para uso real:
 

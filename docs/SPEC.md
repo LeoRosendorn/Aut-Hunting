@@ -47,7 +47,7 @@ Reclutadora ─► Login (email o Google)
 | D1 | Cupo de búsqueda | Cupo de la app, compartido, con límite de 5 huntings por usuaria por día |
 | D2 | Stack | Next.js + Supabase + Vercel |
 | D3 | Idiomas de la interfaz | ES + EN + PT, con selector |
-| D4 | Formatos de JD | Texto pegado, PDF, DOCX, TXT, PNG/JPG/WEBP; máximo 10 MB |
+| D4 | Formatos de JD | Texto pegado, PDF, DOCX, TXT, PNG/JPG/WEBP; máximo 4 MB (Vercel Hobby corta los pedidos en 4,5 MB) |
 | D5 | Modelo de cuentas | 1 cuenta = 1 persona; búsquedas privadas (RLS) |
 | D6 | Extras en el MVP | Mensaje de contacto por candidato + pipeline por búsqueda |
 | D7 | Privacidad IA | Se acepta que la capa gratuita de Gemini pueda usar la JD; se avisa en la UI y en `/privacy` |
@@ -95,7 +95,7 @@ create table hunts (
   title text not null,
   jd_text text not null check (char_length(jd_text) between 200 and 30000),
   jd_source jd_source not null,
-  country char(2) not null,
+  country text not null check (country = 'auto' or country ~ '^[A-Z]{2}$'),  -- "auto": la IA lo deduce de la JD
   profile_language text not null check (profile_language in ('es','en','pt')),
   requirements jsonb,          -- salida validada del paso [1]
   queries jsonb,               -- consultas X-ray usadas en el paso [2]
@@ -160,7 +160,7 @@ Códigos de error (`error_code`) con texto traducido en la UI: `JD_TOO_SHORT`, `
 5. **Puntaje:** una sola llamada a Gemini con los requisitos y hasta 40 perfiles (nombre, titular, snippet). Devuelve por perfil `{score, match_reasons[≤3], gaps[≤3]}`. Se ordena descendente y se guardan los **30 mejores**. Si quedan entre 1 y 19, se guardan igual y se muestra el aviso "Encontramos N perfiles; probá ampliar con el string booleano". Si quedan 0 → `NO_RESULTS`.
 
 **Cupos (`lib/quota.ts`):**
-- Por usuaria: **5 huntings por día** (zona UTC), configurable con `HUNTS_PER_USER_PER_DAY`. Al superarlo → `DAILY_LIMIT` con la hora de reinicio.
+- Por usuaria: **5 huntings por día** (zona UTC), aplicado por un trigger de Postgres que cuenta en `usage_events` (no se puede saltear borrando huntings, insertando por PostgREST ni en paralelo); el límite está en `public.hunts_per_day()`. Al superarlo → `DAILY_LIMIT` con la hora de reinicio.
 - Global: se cuentan los `search_call` por proveedor en el mes calendario. Topes configurables (`TAVILY_MONTHLY_CAP=950`, `SERPER_TOTAL_CAP=2400`). Con los dos agotados → `SEARCH_QUOTA_EXHAUSTED` y el dashboard muestra un banner.
 - Antes de cada llamada a Gemini se revisa un tope de 1.400 `llm_call` por día; al superarlo → `AI_QUOTA_EXHAUSTED`.
 
@@ -202,7 +202,7 @@ Códigos de error (`error_code`) con texto traducido en la UI: `JD_TOO_SHORT`, `
 6. Ningún hunt hace más de 8 llamadas de búsqueda (contadas en `usage_events`).
 7. Cada candidato muestra puntaje 0-100, entre 1 y 3 motivos y un link que abre el perfil en otra pestaña. La lista está ordenada por puntaje descendente.
 8. **Calidad:** (a) Antes del lanzamiento, el dueño del proyecto revisa el top 10 de las 5 JD de prueba y marca como "relevante" al menos 7 de 10 en promedio; el resultado queda en `tests/eval/relevancia.md`. (b) En producción, cada candidato tiene botones 👍/👎 (columna `candidates.feedback smallint check (feedback in (-1,1))`) y el dashboard de admin (consulta SQL documentada en `docs/metricas.md`) muestra el % de 👍 sobre el total votado del top 10.
-9. Un archivo de más de 10 MB o de tipo no soportado se rechaza antes de llamar a cualquier API, con el mensaje traducido.
+9. Un archivo de más de 4 MB o de tipo no soportado se rechaza antes de llamar a cualquier API, con el mensaje traducido.
 10. El sexto hunting del día devuelve `DAILY_LIMIT` y la hora de reinicio, sin llamar a Tavily, Serper ni Gemini.
 11. Si se simula un 429 de Tavily, el hunt se completa usando Serper.
 12. Con los dos proveedores agotados, el hunt falla con `SEARCH_QUOTA_EXHAUSTED` y el dashboard muestra el banner.
