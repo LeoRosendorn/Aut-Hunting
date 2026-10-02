@@ -63,3 +63,6 @@ next-env.d.ts
 
 # Excepción explícita (el bloque de create-next-app de arriba ignora .env*)
 !.env.example
+
+# Credenciales de la usuaria de QA (solo local)
+*.local
