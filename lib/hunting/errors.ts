@@ -8,6 +8,10 @@ export type HuntErrorCode =
   | "AI_NOT_CONFIGURED"
   | "AI_LIMIT"
   | "AI_BUSY"
+  | "SEARCH_NOT_CONFIGURED"
+  | "SEARCH_BUSY"
+  | "SEARCH_QUOTA_EXHAUSTED"
+  | "NO_RESULTS"
   | "DAILY_LIMIT"
   | "INVALID_INPUT"
   | "INTERNAL";

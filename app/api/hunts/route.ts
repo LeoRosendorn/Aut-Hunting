@@ -1,6 +1,7 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { after, NextResponse, type NextRequest } from "next/server";
 import { HuntError, type HuntErrorCode } from "@/lib/hunting/errors";
 import { extractJdText } from "@/lib/hunting/extract";
+import { runHunt } from "@/lib/hunting/pipeline";
 import {
   charLength,
   COUNTRIES,
@@ -17,7 +18,8 @@ import {
 import { consumeAiCall, huntQuota, isDailyLimitError } from "@/lib/hunting/quota";
 import { createClient } from "@/lib/supabase/server";
 
-export const maxDuration = 60;
+// La respuesta sale enseguida; la búsqueda sigue en segundo plano con after() hasta 300 s (Vercel Hobby).
+export const maxDuration = 300;
 
 // Margen para los campos de texto del formulario además del archivo.
 const MAX_BODY_BYTES = MAX_FILE_BYTES + 64 * 1024;
@@ -36,7 +38,7 @@ function fail(code: HuntErrorCode) {
   return NextResponse.json({ error: code }, { status: STATUS[code] ?? 400 });
 }
 
-/** Crea un hunting a partir de una JD pegada o de un archivo. Por ahora queda en estado "pending". */
+/** Crea un hunting a partir de una JD pegada o de un archivo y lanza la búsqueda de perfiles en segundo plano. */
 export async function POST(request: NextRequest) {
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
@@ -103,6 +105,7 @@ export async function POST(request: NextRequest) {
     if (isDailyLimitError(error)) return fail("DAILY_LIMIT");
     if (error) throw error;
 
+    after(() => runHunt(data.id));
     return NextResponse.json({ id: data.id }, { status: 201 });
   } catch (err) {
     if (err instanceof HuntError) return fail(err.code);
