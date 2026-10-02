@@ -154,7 +154,8 @@
       "SEARCH_QUOTA_EXHAUSTED": "Se agotó el cupo gratuito de búsquedas de este mes para toda la app. Se renueva el día 1.",
       "NO_RESULTS": "No encontramos perfiles públicos para esta JD. Probá con otro país o usá el string booleano en LinkedIn.",
       "INTERNAL": "Algo salió mal durante la búsqueda. Probá crear el hunting de nuevo."
-    }
+    },
+    "countryInferred": "{country} · deducido de la JD"
   },
   "notFound": {
     "title": "No encontramos esta página",

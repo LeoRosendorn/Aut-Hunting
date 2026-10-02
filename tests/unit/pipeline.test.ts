@@ -6,10 +6,13 @@ const mocks = vi.hoisted(() => ({
   generateJson: vi.fn(),
   searchLinkedin: vi.fn(),
   remainingSearches: vi.fn(async () => 900),
+  exaConfigured: vi.fn(() => false),
+  searchPeople: vi.fn(),
 }));
 
 vi.mock("@/lib/providers/gemini", () => ({ generateJson: mocks.generateJson }));
 vi.mock("@/lib/providers/tavily", () => ({ searchLinkedin: mocks.searchLinkedin }));
+vi.mock("@/lib/providers/exa", () => ({ isExaConfigured: mocks.exaConfigured, searchPeople: mocks.searchPeople }));
 vi.mock("@/lib/hunting/usage", () => ({ recordUsage: vi.fn(), remainingSearchesThisMonth: mocks.remainingSearches }));
 vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => ({}) }));
 
@@ -78,13 +81,15 @@ beforeEach(() => {
   mocks.generateJson.mockReset();
   mocks.searchLinkedin.mockReset();
   mocks.remainingSearches.mockResolvedValue(900);
+  mocks.exaConfigured.mockReturnValue(false);
+  mocks.searchPeople.mockReset();
 });
 
 describe("runHunt", () => {
   it("lee la JD, busca, puntúa y guarda los perfiles ordenados (sin duplicados ni puntaje 0)", async () => {
     mocks.generateJson.mockResolvedValueOnce(plan).mockResolvedValueOnce({
       scores: [
-        { index: 0, score: 72, reasons: ["Playwright"], gaps: [] },
+        { index: 0, score: 72, headline: "QA · Playwright", reasons: ["Playwright"], gaps: [] },
         { index: 1, score: 91, reasons: ["Lidera QA"], gaps: ["Sin inglés"] },
         { index: 1, score: 50, reasons: [], gaps: [] }, // índice repetido por la IA
         { index: 2, score: 0, reasons: [], gaps: [] }, // no es una persona
@@ -151,5 +156,28 @@ describe("runHunt", () => {
     const { admin } = fakeAdmin("searching");
     await runHunt("h1", { admin: admin as never });
     expect(mocks.generateJson).not.toHaveBeenCalled();
+  });
+
+  it("con Exa configurado usa Exa y solo cae a Tavily si Exa falla", async () => {
+    mocks.exaConfigured.mockReturnValue(true);
+    mocks.generateJson.mockResolvedValueOnce(plan).mockResolvedValueOnce({
+      scores: [
+        { index: 0, score: 88, reasons: [], gaps: [] },
+        { index: 1, score: 70, reasons: [], gaps: [] },
+      ],
+    });
+    mocks.searchPeople
+      .mockResolvedValueOnce([result("ana", "Ana Paz - QA | LinkedIn")])
+      .mockRejectedValueOnce(new HuntError("SEARCH_QUOTA_EXHAUSTED"));
+    mocks.searchLinkedin.mockResolvedValue([result("beto", "Beto Ruiz - SDET | LinkedIn")]);
+
+    const { admin, hunt, upserts } = fakeAdmin();
+    await runHunt("h1", { admin: admin as never });
+
+    expect(hunt.status).toBe("done");
+    expect(mocks.searchPeople).toHaveBeenCalledTimes(2); // la 2.ª falló: ya no se vuelve a intentar Exa
+    expect(mocks.searchPeople).toHaveBeenCalledWith(plan.queries[0], "AR");
+    expect(mocks.searchLinkedin).toHaveBeenCalled();
+    expect(upserts[0].map((r) => r.name)).toEqual(["Ana Paz", "Beto Ruiz"]);
   });
 });

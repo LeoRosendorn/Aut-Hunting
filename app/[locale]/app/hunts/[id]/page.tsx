@@ -54,7 +54,7 @@ export default async function HuntPage({ params }: Params) {
     hunt.country !== "auto"
       ? regions.of(hunt.country)
       : inferred
-        ? `${regions.of(inferred)} (${tn("countryAuto").toLowerCase()})`
+        ? t("countryInferred", { country: regions.of(inferred) ?? inferred })
         : tn("countryAuto");
 
   let candidates: CandidateRow[] = [];

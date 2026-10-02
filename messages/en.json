@@ -154,7 +154,8 @@
       "SEARCH_QUOTA_EXHAUSTED": "The app's free monthly search quota is used up. It resets on the 1st.",
       "NO_RESULTS": "We couldn't find public profiles for this JD. Try another country or use the boolean string on LinkedIn.",
       "INTERNAL": "Something went wrong during the search. Try creating the hunt again."
-    }
+    },
+    "countryInferred": "{country} · inferred from the JD"
   },
   "notFound": {
     "title": "We couldn't find this page",

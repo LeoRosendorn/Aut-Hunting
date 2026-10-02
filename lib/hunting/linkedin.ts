@@ -29,12 +29,12 @@ export function normalizeLinkedinUrl(raw: string): string | null {
 export type ParsedProfile = { name: string; headline: string | null };
 
 /**
- * Los buscadores titulan los perfiles así: "Nombre Apellido - Titular - Empresa | LinkedIn"
- * (o con "–" / "·"). Se separa el nombre del resto.
+ * Los buscadores titulan los perfiles así: "Nombre Apellido - Titular - Empresa | LinkedIn" (Google, Tavily)
+ * o "Nombre Apellido | Titular | Skills" (Exa). Se separa el nombre del resto.
  */
 export function parseProfileTitle(title: string): ParsedProfile {
   const clean = title.replace(/\s*[|·]\s*LinkedIn\s*$/i, "").trim();
-  const [name, ...rest] = clean.split(/\s+[-–—]\s+/);
+  const [name, ...rest] = clean.split(/\s+[-–—|]\s+/);
   const headline = rest.join(" · ").trim();
   return { name: (name ?? clean).trim().slice(0, 120), headline: headline ? headline.slice(0, 300) : null };
 }

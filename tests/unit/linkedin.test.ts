@@ -31,6 +31,8 @@ describe("parseProfileTitle", () => {
     ["Lucía Fernández - QA Automation Lead - Mercado Libre | LinkedIn", "Lucía Fernández", "QA Automation Lead · Mercado Libre"],
     ["Martín Gómez – SDET Senior · LinkedIn", "Martín Gómez", "SDET Senior"],
     ["Valentina Ruiz | LinkedIn", "Valentina Ruiz", null],
+    // Formato de Exa (category "people")
+    ["Emiliana Corbatta | Senior QA Automation Engineer | Cypress & Playwright", "Emiliana Corbatta", "Senior QA Automation Engineer · Cypress & Playwright"],
   ])("%s", (title, name, headline) => {
     expect(parseProfileTitle(title)).toEqual({ name, headline });
   });
