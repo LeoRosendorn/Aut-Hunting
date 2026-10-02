@@ -80,6 +80,13 @@ export function AuthForm({ mode, next, initialError }: { mode: Mode; next?: stri
             className="h-11"
           />
         </Field>
+        {isLogin && (
+          <p className="-mt-2 text-right text-sm">
+            <Link href="/forgot-password" className="text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
+              {t("forgotLink")}
+            </Link>
+          </p>
+        )}
 
         {state.status === "error" && (
           <p role="alert" className="flex items-start gap-2 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
@@ -92,6 +99,22 @@ export function AuthForm({ mode, next, initialError }: { mode: Mode; next?: stri
           {pending && <Loader2 className="animate-spin" />}
           {t(isLogin ? "loginSubmit" : "signupSubmit")}
         </Button>
+        {!isLogin && (
+          <p className="text-center text-xs text-muted-foreground">
+            {t.rich("legalConsent", {
+              terms: (chunks) => (
+                <Link href="/terms" className="underline underline-offset-2 hover:text-foreground">
+                  {chunks}
+                </Link>
+              ),
+              privacy: (chunks) => (
+                <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </p>
+        )}
       </form>
 
       <p className="text-center text-sm text-muted-foreground">

@@ -61,7 +61,11 @@ export function toGeminiSchema(schema: z.ZodType): unknown {
  * Pide JSON con el esquema dado y lo valida con Zod (la salida de un LLM nunca se guarda sin validar).
  * Si el JSON no cumple, reintenta una vez; si vuelve a fallar → AI_BUSY.
  */
-export async function generateJson<T>(prompt: string, schema: z.ZodType<T>): Promise<T> {
+export async function generateJson<T>(
+  prompt: string,
+  schema: z.ZodType<T>,
+  { temperature = 0.2 }: { temperature?: number } = {},
+): Promise<T> {
   const ai = gemini();
   for (let attempt = 0; attempt < 2; attempt++) {
     let text: string;
@@ -72,7 +76,7 @@ export async function generateJson<T>(prompt: string, schema: z.ZodType<T>): Pro
         config: {
           responseMimeType: "application/json",
           responseJsonSchema: toGeminiSchema(schema),
-          temperature: 0.2,
+          temperature,
           abortSignal: AbortSignal.timeout(GEMINI_PIPELINE_TIMEOUT_MS),
         },
       }));

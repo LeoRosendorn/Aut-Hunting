@@ -1,0 +1,21 @@
+<!-- Supabase → Authentication → Emails → "Confirm sign up". Asunto sugerido: AI-Hunting · Confirmá tu cuenta / Confirm your account -->
+<!-- El link usa token_hash: funciona aunque se abra en otro navegador o en el celular. Requiere Site URL = https://aihunting.vercel.app -->
+{{ $l := "es" }}{{ with .Data.locale }}{{ if eq . "en" }}{{ $l = "en" }}{{ else if eq . "pt" }}{{ $l = "pt" }}{{ end }}{{ end }}
+<div style="background:#f6f7f9;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;color:#0b1f3a">
+  <div style="max-width:480px;margin:0 auto;background:#ffffff;border-radius:12px;padding:32px;border:1px solid #e3e6eb">
+    <p style="margin:0 0 24px;font-size:20px;font-weight:bold"><span style="color:#0f766e">AI</span>-Hunting</p>
+    <h1 style="margin:0 0 12px;font-size:22px">
+      {{ if eq $l "en" }}Confirm your account{{ else if eq $l "pt" }}Confirme sua conta{{ else }}Confirmá tu cuenta{{ end }}
+    </h1>
+    <p style="margin:0 0 24px;font-size:15px;line-height:1.5;color:#5b6476">
+      {{ if eq $l "en" }}Click the button to activate your account and start your first hunt.{{ else if eq $l "pt" }}Clique no botão para ativar sua conta e começar seu primeiro hunting.{{ else }}Tocá el botón para activar tu cuenta y empezar tu primer hunting.{{ end }}
+    </p>
+    <a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=email&next=/{{ $l }}/app"
+       style="display:inline-block;background:#0f766e;color:#ffffff;text-decoration:none;font-weight:bold;padding:12px 20px;border-radius:8px">
+      {{ if eq $l "en" }}Confirm account{{ else if eq $l "pt" }}Confirmar conta{{ else }}Confirmar cuenta{{ end }}
+    </a>
+    <p style="margin:24px 0 0;font-size:12px;color:#5b6476">
+      {{ if eq $l "en" }}If you didn't create an account, ignore this email.{{ else if eq $l "pt" }}Se você não criou uma conta, ignore este email.{{ else }}Si no creaste una cuenta, ignorá este email.{{ end }}
+    </p>
+  </div>
+</div>

@@ -47,13 +47,35 @@ npm run dev                  # http://localhost:3000
 1. <https://aistudio.google.com/apikey> → **Create API key** (capa gratuita, sin tarjeta).
 2. Cargar `GEMINI_API_KEY` en `.env.local` y en Vercel → Environment Variables. Sin esta clave, la app acepta texto, PDF con texto, Word y TXT, y rechaza imágenes con un aviso claro.
 
-## 6. SMTP gratuito para los emails de confirmación
+## 6. SMTP gratuito (Brevo) para los emails de la cuenta
 
-El SMTP incluido en Supabase tiene un límite por hora muy bajo. Para uso real:
+El SMTP incluido en Supabase manda muy pocos emails por hora: con la app abierta al público no alcanza.
 
-1. Crear cuenta en <https://www.brevo.com> (plan Free) y verificar el email remitente.
-2. **SMTP & API → SMTP**: copiar host, puerto, usuario y clave SMTP.
-3. Supabase → **Authentication → Emails → SMTP Settings** → activar *Custom SMTP* y pegar los datos.
+1. Crear cuenta en <https://www.brevo.com> (plan **Free**, 300 emails/día, sin tarjeta).
+2. **Senders, Domains & Dedicated IPs → Senders → Add a sender**: nombre `AI-Hunting` y el email remitente. Brevo manda un código a ese email para verificarlo.
+3. **SMTP & API → SMTP**: anotar *SMTP server* (`smtp-relay.brevo.com`), *Port* (`587`) y *Login*; tocar **Generate a new SMTP key** y copiar la clave (se muestra una sola vez).
+4. Supabase → **Authentication → Emails → SMTP Settings** → activar **Enable Custom SMTP** y completar: sender email (el verificado en el paso 2), sender name `AI-Hunting`, host, puerto `587`, usuario (*Login*) y contraseña (la *SMTP key*). Guardar.
+5. Supabase → **Authentication → Rate Limits**: subir *Rate limit for sending emails* a 30 por hora.
+6. Supabase → **Authentication → Emails → Templates**: pegar las plantillas de `supabase/email-templates/` (español, inglés o portugués según el idioma de la usuaria):
+   - **Confirm sign up** ← `confirm-signup.html` · asunto `AI-Hunting · Confirmá tu cuenta / Confirm your account`
+   - **Reset password** ← `reset-password.html` · asunto `AI-Hunting · Elegí una contraseña nueva / Reset your password`
+7. Supabase → **Authentication → URL Configuration**: *Site URL* = `https://aihunting.vercel.app` (las plantillas arman el link con esa URL) y en *Redirect URLs* tener `https://aihunting.vercel.app/auth/callback`.
+
+> Gmail como remitente funciona, pero algunos emails pueden caer en spam porque Brevo no puede firmar con el dominio de Gmail. Con un dominio propio se corrige más adelante.
+
+## 7. Abrir la app a todo el mundo
+
+1. **Migraciones:** correr en el SQL Editor las que falten de `supabase/migrations/` (la última: `20261003000000_outreach_quota.sql`, cupo de mensajes de contacto).
+2. **Publicar Google OAuth** (mientras esté en *Testing* solo pueden entrar las cuentas de prueba):
+   1. <https://console.cloud.google.com> → proyecto `ai-hunting` → **Google Auth Platform → Branding**:
+      - App name `AI-Hunting`, support email y developer contact.
+      - App home page `https://aihunting.vercel.app/es`
+      - Privacy policy `https://aihunting.vercel.app/es/privacy`
+      - Terms of service `https://aihunting.vercel.app/es/terms`
+      - Sin logo (subir un logo obliga a una verificación de marca de varios días).
+   2. **Data Access**: solo `openid`, `.../auth/userinfo.email` y `.../auth/userinfo.profile` (son "no sensibles": no requieren verificación de Google).
+   3. **Audience → Publish app → Confirm**. El estado pasa a *In production* y cualquier cuenta de Google puede entrar.
+3. **Verificar:** crear una cuenta con un email nuevo (llega el email de Brevo), entrar con otra cuenta de Google que no sea de prueba, hacer un hunting, generar un mensaje y mover un candidato de etapa.
 
 ## Verificación
 

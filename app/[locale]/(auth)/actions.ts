@@ -4,7 +4,7 @@ import { redirect as nextRedirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { redirect } from "@/i18n/navigation";
 import { mapSupabaseAuthError, type AuthErrorKey } from "@/lib/auth/errors";
-import { loginSchema, signupSchema } from "@/lib/auth/schemas";
+import { forgotSchema, loginSchema, newPasswordSchema, signupSchema } from "@/lib/auth/schemas";
 import { safeNextPath } from "@/lib/safe-next";
 import { siteUrl } from "@/lib/site-url";
 import { createClient } from "@/lib/supabase/server";
@@ -63,6 +63,42 @@ export async function signUp(_prev: AuthState, formData: FormData): Promise<Auth
   // Si el email ya existía, devuelve un usuario sin identidades para no filtrar qué emails están registrados.
   if (data.session) redirect({ href: "/app", locale });
   return { status: "check-email", email: parsed.data.email };
+}
+
+/** Manda el email para elegir una contraseña nueva. Siempre responde igual, para no revelar qué emails existen. */
+export async function requestPasswordReset(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const parsed = forgotSchema.safeParse({ email: formData.get("email") });
+  if (!parsed.success) {
+    return { status: "error", error: parsed.error.issues[0].message as AuthErrorKey };
+  }
+
+  const locale = await getLocale();
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(parsed.data.email, {
+    redirectTo: `${await siteUrl()}/auth/callback?next=/${locale}/reset-password`,
+  });
+  if (error && mapSupabaseAuthError(error.code) === "rateLimited") {
+    return { status: "error", error: "rateLimited", email: parsed.data.email };
+  }
+  return { status: "check-email", email: parsed.data.email };
+}
+
+/** Guarda la contraseña nueva. Requiere la sesión que abre el link del email. */
+export async function updatePassword(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const parsed = newPasswordSchema.safeParse({ password: formData.get("password") });
+  if (!parsed.success) {
+    return { status: "error", error: parsed.error.issues[0].message as AuthErrorKey };
+  }
+
+  const supabase = await createClient();
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) return { status: "error", error: "linkExpired" };
+
+  const { error } = await supabase.auth.updateUser({ password: parsed.data.password });
+  if (error) return { status: "error", error: mapSupabaseAuthError(error.code) };
+
+  redirect({ href: "/app", locale: await getLocale() });
+  return { status: "idle" };
 }
 
 export async function signOut() {

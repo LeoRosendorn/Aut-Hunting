@@ -24,8 +24,94 @@
     "step2Title": "We search for you",
     "step2Body": "We track down matching public profiles and drop duplicates.",
     "step3Title": "Reach the best ones",
-    "step3Body": "20 to 30 profiles with a match score, reasons and a personalized message.",
-    "footnote": "AI-Hunting never logs into your LinkedIn account or sends messages on your behalf."
+    "step3Body": "20 to 30 profiles with a fit score, reasons and a personalized message ready to copy.",
+    "footnote": "AI-Hunting never logs into your LinkedIn account or sends messages on your behalf.",
+    "heroNote": "No credit card · 5 hunts per day · Spanish, English and Portuguese",
+    "previewLabel": "Example of a hunt result",
+    "previewTitle": "Senior QA Automation · Buenos Aires",
+    "previewStatus": "Ready",
+    "preview": [
+      {
+        "name": "Lucía Fernández",
+        "headline": "QA Automation · Playwright & Cypress",
+        "score": 92
+      },
+      {
+        "name": "Martín Sosa",
+        "headline": "SDET · Java, Selenium, CI/CD",
+        "score": 86
+      },
+      {
+        "name": "Carla Méndez",
+        "headline": "QA Analyst · API testing with Postman",
+        "score": 71
+      }
+    ],
+    "previewNote": "Illustrative example with fictitious data.",
+    "featuresTitle": "Everything you need to reach the first contact",
+    "featuresSubtitle": "From the Job Description to the message sent, without spreadsheets or extra tabs.",
+    "features": [
+      {
+        "title": "Ranked by fit",
+        "body": "Each profile comes with a 0–100 score, why it fits and what's missing, so you can quickly decide who to write to."
+      },
+      {
+        "title": "Personalized message",
+        "body": "A short invitation and a longer message written for each person, based on their profile. Edit it, hit Copy and paste it into LinkedIn."
+      },
+      {
+        "title": "Candidate tracking",
+        "body": "Move each person from Contacted to Replied to Interview, and keep notes. See every search's progress at a glance."
+      },
+      {
+        "title": "Boolean string",
+        "body": "On top of the profiles, you get a boolean search ready to paste into LinkedIn or LinkedIn Recruiter."
+      },
+      {
+        "title": "Your JD, any format",
+        "body": "Paste the text or upload a PDF, a Word file, a TXT or a screenshot."
+      },
+      {
+        "title": "Three languages",
+        "body": "The app works in Spanish, English and Portuguese, and you can search for profiles in any of them."
+      }
+    ],
+    "pipelineTitle": "Track every candidate without spreadsheets",
+    "pipelineBody": "Each hunt has its own pipeline. When you copy the message, we offer to move the person to Contacted; then you move them when they reply or when you book the interview.",
+    "trustTitle": "Clear from the start",
+    "trustBody": "AI-Hunting only works with public information and never acts on your behalf.",
+    "trustLink": "Read the privacy policy",
+    "trust": [
+      "It never logs into your LinkedIn account or asks for your password.",
+      "It doesn't send messages for you: you decide what to send and to whom.",
+      "It only uses public profiles that show up in search engines.",
+      "You can delete your account and all your data at any time."
+    ],
+    "faqTitle": "Frequently asked questions",
+    "faq": [
+      {
+        "q": "Is it really free?",
+        "a": "Yes. AI-Hunting runs on free tiers of cloud services. So there's enough for everyone, each account has a daily quota: 5 hunts and 60 messages per day."
+      },
+      {
+        "q": "Where do the profiles come from?",
+        "a": "From search engines that index public LinkedIn profiles. We don't use your account or access LinkedIn, so we can't see private profiles or contact details."
+      },
+      {
+        "q": "Do I need LinkedIn Recruiter?",
+        "a": "No. With a regular LinkedIn account you can open the profiles and send the invitation with the message. If you have Recruiter, the boolean string helps you keep searching."
+      },
+      {
+        "q": "What happens to the Job Description I upload?",
+        "a": "Only the text is stored, in your private account. To read it we use Google Gemini's free tier, which may use that content to improve its services: don't include confidential client data."
+      },
+      {
+        "q": "Can I delete my data?",
+        "a": "Yes. Settings → Delete account instantly deletes your user, your hunts, candidates, messages and notes."
+      }
+    ],
+    "finalTitle": "Your next hunt, in two minutes",
+    "finalBody": "Create your free account and upload your first Job Description."
   },
   "auth": {
     "loginTitle": "Welcome back",
@@ -53,8 +139,21 @@
       "userExists": "An account with that email already exists.",
       "rateLimited": "Too many attempts. Wait a few minutes and try again.",
       "callback": "We couldn't complete the sign-in. Please try again.",
-      "generic": "Something went wrong. Please try again."
-    }
+      "generic": "Something went wrong. Please try again.",
+      "samePassword": "The new password must be different from the old one.",
+      "linkExpired": "The link expired or was already used. Request a new one."
+    },
+    "forgotLink": "Forgot your password?",
+    "forgotTitle": "Reset your password",
+    "forgotSubtitle": "We'll send you a link to choose a new one.",
+    "forgotSubmit": "Send link",
+    "resetTitle": "Choose a new password",
+    "resetSubtitle": "Then you'll go straight to your hunts.",
+    "resetSubmit": "Save password",
+    "newPassword": "New password",
+    "resetEmailSent": "If {email} has an account, you'll get a link to choose a new password. If you don't see it, check your spam folder.",
+    "backToLogin": "Back to log in",
+    "legalConsent": "By creating an account you accept the <terms>Terms</terms> and the <privacy>Privacy Policy</privacy>."
   },
   "dashboard": {
     "greeting": "Hi, {name}",
@@ -155,11 +254,182 @@
       "NO_RESULTS": "We couldn't find public profiles for this JD. Try another country or use the boolean string on LinkedIn.",
       "INTERNAL": "Something went wrong during the search. Try creating the hunt again."
     },
-    "countryInferred": "{country} · inferred from the JD"
+    "countryInferred": "{country} · inferred from the JD",
+    "pipelineLabel": "Filter candidates by stage",
+    "filterAll": "All",
+    "filterEmpty": "No candidates in this stage.",
+    "stages": {
+      "found": "Not contacted",
+      "contacted": "Contacted",
+      "replied": "Replied",
+      "interview": "Interview",
+      "discarded": "Discarded"
+    },
+    "stageLabel": "Stage for {name}",
+    "message": "Message",
+    "saveError": "We couldn't save the change. Please try again.",
+    "outreachIntro": "We'll draft a message written for this person, based on their profile and your search.",
+    "generate": "Write message",
+    "generating": "Writing…",
+    "variantShort": "Invitation",
+    "variantLong": "Message / InMail",
+    "variantShortHint": "Note for the connection request",
+    "variantLongHint": "Direct message or InMail",
+    "regenerate": "Another version",
+    "copyError": "We couldn't copy it. Select the text and copy it manually.",
+    "copiedAskContacted": "Message copied. Move them to Contacted?",
+    "markContacted": "Mark contacted",
+    "copiedMessage": "Message copied",
+    "openToSend": "Open in LinkedIn",
+    "notes": "Notes",
+    "notesPlaceholder": "E.g. Asks for 15% more, available in 30 days…",
+    "outreachErrors": {
+      "OUTREACH_LIMIT": "You've used today's messages. They reset at 00:00 UTC.",
+      "AI_BUSY": "The AI is busy right now. Try again in a few minutes.",
+      "AI_NOT_CONFIGURED": "AI isn't configured in the app yet.",
+      "INTERNAL": "We couldn't write the message. Please try again."
+    }
   },
   "notFound": {
     "title": "We couldn't find this page",
     "body": "The link may be mistyped, or the hunt may no longer exist.",
     "back": "Go to my hunts"
+  },
+  "footer": {
+    "disclaimer": "AI-Hunting never logs into your LinkedIn account or sends messages for you. A free, independent project, not affiliated with LinkedIn.",
+    "legal": "Legal information",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "contact": "Contact"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Your details and your account.",
+    "profileTitle": "Profile",
+    "email": "Email",
+    "fullName": "Full name",
+    "fullNameHint": "We use it to sign your outreach messages.",
+    "save": "Save",
+    "saved": "Saved",
+    "saveError": "We couldn't save it. Check the name and try again.",
+    "deleteTitle": "Delete account",
+    "deleteBody": "This permanently deletes your user, your hunts, candidates, messages and notes. It can't be undone.",
+    "deleteButton": "Delete my account",
+    "deleteConfirmLabel": "To confirm, type your email ({email})",
+    "deleteConfirm": "Delete permanently",
+    "deleteError": "We couldn't delete the account. Try again in a few minutes.",
+    "cancel": "Cancel"
+  },
+  "legal": {
+    "updated": "Last updated: {date}",
+    "updatedDate": "October 2, 2026",
+    "privacy": {
+      "title": "Privacy policy",
+      "intro": "This policy explains what data AI-Hunting uses, what for, and how you can delete it. AI-Hunting is a free, independent project; for any question, write to {email}.",
+      "sections": [
+        {
+          "title": "Your account data",
+          "body": [
+            "When you sign up we store your name, your email, your preferred language and, if you sign up with email, your encrypted password. If you sign in with Google, Google only shares your name, email and profile picture; we don't access your Gmail, Drive or any other Google service.",
+            "We use this data only to let you sign in, show you your searches and sign your outreach messages with your name."
+          ]
+        },
+        {
+          "title": "Job Descriptions and results",
+          "body": [
+            "For each Job Description we store the extracted text; the original file is not stored. We also store each search's results, the generated messages, pipeline stages and the notes you write.",
+            "All of this is private: only you can see it. The database enforces per-user access controls."
+          ]
+        },
+        {
+          "title": "Candidate data",
+          "body": [
+            "The profiles we show come from public information indexed by search engines: name, headline, profile link and a public snippet. We don't log into LinkedIn, don't use your account and don't obtain emails or phone numbers.",
+            "You are responsible for how you use those profiles and your messages, under the data protection law that applies to you. If you appear in the results and want us to delete your data, write to {email}."
+          ]
+        },
+        {
+          "title": "Services we use",
+          "body": [
+            "Supabase (database and login), Vercel (website hosting), Google Gemini (AI that reads the JD, scores profiles and drafts messages), Exa and Tavily (search engines: they receive the search queries, not the full JD), Brevo (account emails) and Google (sign-in, if you choose it).",
+            "We use Gemini's free tier: Google may use the content sent to it to improve its products. That's why we ask you not to include confidential client data in the Job Description."
+          ]
+        },
+        {
+          "title": "What we don't do",
+          "body": [
+            "We don't sell or share your data for commercial purposes, we don't show ads and we don't use third-party tracking tools."
+          ]
+        },
+        {
+          "title": "How long we keep data",
+          "body": [
+            "For as long as you keep your account. Deleting it from Settings instantly deletes your user, your hunts, candidates, messages and notes. Only anonymous usage records remain (for example, how many searches were run that day) to manage the free quotas."
+          ]
+        },
+        {
+          "title": "Your rights",
+          "body": [
+            "You can view and correct your data in the app, change your name in Settings and delete everything with Delete account. For any other access, correction or deletion request, write to {email} and we'll reply within 30 days."
+          ]
+        },
+        {
+          "title": "Changes",
+          "body": [
+            "If we change this policy, we'll update the date above. If the change is significant, we'll let you know inside the app."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Terms of use",
+      "intro": "By creating an AI-Hunting account you accept these terms. If you have questions, write to {email}.",
+      "sections": [
+        {
+          "title": "The service",
+          "body": [
+            "AI-Hunting helps recruiters find public LinkedIn profiles from a Job Description, draft the first message and track each candidate. It is free and provided as is, with no guarantee of continuous availability.",
+            "So there's enough for everyone, there are daily quotas per account (currently 5 hunts and 60 messages per day) and monthly quotas for the whole app. We may change these quotas or the service, and we'll announce significant changes."
+          ]
+        },
+        {
+          "title": "Your account",
+          "body": [
+            "Each account belongs to a single person aged 18 or over. Keep your password safe: you are responsible for what is done with your account."
+          ]
+        },
+        {
+          "title": "Acceptable use",
+          "body": [
+            "Use AI-Hunting only for legitimate recruiting. Sending spam, harassing candidates, discriminating based on legally protected characteristics, collecting data to sell it or violating LinkedIn's terms is not allowed.",
+            "Automating the app, trying to bypass quotas or accessing other people's data is not allowed either. We may suspend accounts that do so."
+          ]
+        },
+        {
+          "title": "Your content",
+          "body": [
+            "You are responsible for the Job Descriptions you upload and the messages you send. Don't include confidential client data: the JD is processed with Google Gemini's free tier."
+          ]
+        },
+        {
+          "title": "AI results",
+          "body": [
+            "Scores, reasons and messages are generated by AI and may contain errors. They are an aid, not a hiring decision: review each profile and message before using them."
+          ]
+        },
+        {
+          "title": "Liability",
+          "body": [
+            "To the extent permitted by law, AI-Hunting is not liable for damages arising from the use of the service, its unavailability or the search results."
+          ]
+        },
+        {
+          "title": "Leaving",
+          "body": [
+            "You can stop using AI-Hunting and delete your account at any time from Settings → Delete account."
+          ]
+        }
+      ]
+    }
   }
 }

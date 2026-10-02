@@ -6,7 +6,7 @@ import { updateSession } from "./lib/supabase/proxy";
 const intl = createIntlMiddleware(routing);
 
 const LOCALE_PATH = /^\/(es|en|pt)(\/.*)?$/;
-const GUEST_ONLY = ["/login", "/signup"];
+const GUEST_ONLY = ["/login", "/signup", "/forgot-password"];
 
 export async function proxy(request: NextRequest) {
   const response = intl(request);

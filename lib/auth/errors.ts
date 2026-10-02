@@ -8,6 +8,8 @@ export type AuthErrorKey =
   | "userExists"
   | "rateLimited"
   | "callback"
+  | "samePassword"
+  | "linkExpired"
   | "generic";
 
 /** Traduce el `code` de un AuthError de Supabase a una clave de mensaje propia. */
@@ -25,6 +27,8 @@ export function mapSupabaseAuthError(code: string | undefined): AuthErrorKey {
     case "user_already_exists":
     case "email_exists":
       return "userExists";
+    case "same_password":
+      return "samePassword";
     case "over_request_rate_limit":
     case "over_email_send_rate_limit":
       return "rateLimited";
