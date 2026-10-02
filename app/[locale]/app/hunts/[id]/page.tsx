@@ -62,7 +62,7 @@ export default async function HuntPage({ params }: Params) {
     const supabase = await createClient();
     const { data } = await supabase
       .from("candidates")
-      .select("id, linkedin_url, name, headline, score, match_reasons, gaps")
+      .select("id, linkedin_url, name, headline, score, match_reasons, gaps, stage, outreach_short, outreach_long, notes")
       .eq("hunt_id", hunt.id)
       .order("score", { ascending: false });
     candidates = (data ?? []) as CandidateRow[];

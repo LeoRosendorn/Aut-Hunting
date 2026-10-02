@@ -155,7 +155,41 @@
       "NO_RESULTS": "Não encontramos perfis públicos para esta JD. Tente outro país ou use a string booleana no LinkedIn.",
       "INTERNAL": "Algo deu errado durante a busca. Tente criar o hunting de novo."
     },
-    "countryInferred": "{country} · deduzido da JD"
+    "countryInferred": "{country} · deduzido da JD",
+    "pipelineLabel": "Filtrar candidatos por etapa",
+    "filterAll": "Todos",
+    "filterEmpty": "Nenhum candidato nesta etapa.",
+    "stages": {
+      "found": "Não contatado",
+      "contacted": "Contatado",
+      "replied": "Respondeu",
+      "interview": "Entrevista",
+      "discarded": "Descartado"
+    },
+    "stageLabel": "Etapa de {name}",
+    "message": "Mensagem",
+    "saveError": "Não conseguimos salvar a alteração. Tente de novo.",
+    "outreachIntro": "Escrevemos uma mensagem pensada para esta pessoa, a partir do perfil dela e da sua busca.",
+    "generate": "Gerar mensagem",
+    "generating": "Escrevendo…",
+    "variantShort": "Convite",
+    "variantLong": "Mensagem / InMail",
+    "variantShortHint": "Nota do convite para conectar",
+    "variantLongHint": "Mensagem direta ou InMail",
+    "regenerate": "Outra versão",
+    "copyError": "Não conseguimos copiar. Selecione o texto e copie manualmente.",
+    "copiedAskContacted": "Mensagem copiada. Mover para Contatado?",
+    "markContacted": "Marcar contatado",
+    "copiedMessage": "Mensagem copiada",
+    "openToSend": "Abrir no LinkedIn",
+    "notes": "Notas",
+    "notesPlaceholder": "Ex.: Pede 15% a mais, disponível em 30 dias…",
+    "outreachErrors": {
+      "OUTREACH_LIMIT": "Você usou as mensagens de hoje. Elas renovam às 00:00 UTC.",
+      "AI_BUSY": "A IA está sobrecarregada agora. Tente em alguns minutos.",
+      "AI_NOT_CONFIGURED": "A IA ainda não está configurada no app.",
+      "INTERNAL": "Não conseguimos gerar a mensagem. Tente de novo."
+    }
   },
   "notFound": {
     "title": "Não encontramos esta página",

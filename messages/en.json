@@ -155,7 +155,41 @@
       "NO_RESULTS": "We couldn't find public profiles for this JD. Try another country or use the boolean string on LinkedIn.",
       "INTERNAL": "Something went wrong during the search. Try creating the hunt again."
     },
-    "countryInferred": "{country} · inferred from the JD"
+    "countryInferred": "{country} · inferred from the JD",
+    "pipelineLabel": "Filter candidates by stage",
+    "filterAll": "All",
+    "filterEmpty": "No candidates in this stage.",
+    "stages": {
+      "found": "Not contacted",
+      "contacted": "Contacted",
+      "replied": "Replied",
+      "interview": "Interview",
+      "discarded": "Discarded"
+    },
+    "stageLabel": "Stage for {name}",
+    "message": "Message",
+    "saveError": "We couldn't save the change. Please try again.",
+    "outreachIntro": "We'll draft a message written for this person, based on their profile and your search.",
+    "generate": "Write message",
+    "generating": "Writing…",
+    "variantShort": "Invitation",
+    "variantLong": "Message / InMail",
+    "variantShortHint": "Note for the connection request",
+    "variantLongHint": "Direct message or InMail",
+    "regenerate": "Another version",
+    "copyError": "We couldn't copy it. Select the text and copy it manually.",
+    "copiedAskContacted": "Message copied. Move them to Contacted?",
+    "markContacted": "Mark contacted",
+    "copiedMessage": "Message copied",
+    "openToSend": "Open in LinkedIn",
+    "notes": "Notes",
+    "notesPlaceholder": "E.g. Asks for 15% more, available in 30 days…",
+    "outreachErrors": {
+      "OUTREACH_LIMIT": "You've used today's messages. They reset at 00:00 UTC.",
+      "AI_BUSY": "The AI is busy right now. Try again in a few minutes.",
+      "AI_NOT_CONFIGURED": "AI isn't configured in the app yet.",
+      "INTERNAL": "We couldn't write the message. Please try again."
+    }
   },
   "notFound": {
     "title": "We couldn't find this page",
