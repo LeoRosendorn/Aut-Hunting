@@ -4,14 +4,14 @@ import { z } from "zod";
 export const huntPlanSchema = z.object({
   role_title: z.string().min(2).max(120),
   seniority: z.enum(["trainee", "junior", "semi_senior", "senior", "lead", "manager", "unknown"]),
-  must_have_skills: z.array(z.string().min(1).max(60)).max(10),
-  nice_to_have_skills: z.array(z.string().min(1).max(60)).max(10),
+  must_have_skills: z.array(z.string().min(1).max(120)).max(20),
+  nice_to_have_skills: z.array(z.string().min(1).max(120)).max(20),
   years_min: z.number().int().min(0).max(40).nullable(),
-  languages: z.array(z.string().min(1).max(40)).max(5),
+  languages: z.array(z.string().min(1).max(60)).max(10),
   location: z.string().max(120).nullable(),
   country_code: z.string().regex(/^[A-Z]{2}$/).nullable(),
-  queries: z.array(z.string().min(3).max(200)).min(3).max(6),
-  boolean_string: z.string().min(3).max(600),
+  queries: z.array(z.string().min(3).max(300)).min(1).max(12),
+  boolean_string: z.string().min(3).max(1200),
 });
 export type HuntPlan = z.infer<typeof huntPlanSchema>;
 
@@ -20,13 +20,14 @@ export const scoringSchema = z.object({
   scores: z
     .array(
       z.object({
-        index: z.number().int().min(0),
+        index: z.number().int().min(0).max(99),
         score: z.number().int().min(0).max(100),
-        reasons: z.array(z.string().min(1).max(140)).max(3),
-        gaps: z.array(z.string().min(1).max(140)).max(3),
+        headline: z.string().max(300),
+        reasons: z.array(z.string().min(1).max(400)).max(10),
+        gaps: z.array(z.string().min(1).max(400)).max(10),
       }),
     )
-    .max(60),
+    .max(100),
 });
 export type Scoring = z.infer<typeof scoringSchema>;
 
@@ -61,6 +62,7 @@ export function scoringPrompt(plan: HuntPlan, profiles: ProfileForScoring[], pro
     `Escribí reasons (por qué encaja) y gaps (qué falta o no se ve) en ${LANGUAGE_NAMES[profileLanguage]}, frases de menos de 12 palabras.`,
     "Guía: 85-100 cumple casi todo lo obligatorio; 70-84 cumple lo principal; 50-69 parcial; <50 poco relacionado.",
     "Si un resultado no es el perfil de una persona (empresa, oferta, publicación), dale 0.",
+    "headline: titular corto del perfil en menos de 10 palabras: rol principal + especialidad o empresa (ej. \"Data Analyst · Power BI y SQL\"), deducido del titular o del fragmento. Solo devolvé \"\" si el perfil no tiene ningún dato.",
     "Devolvé un objeto por cada índice recibido.",
     "",
     "<busqueda>",

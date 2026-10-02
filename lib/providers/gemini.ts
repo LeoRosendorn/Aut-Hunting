@@ -3,8 +3,30 @@ import { ApiError, createPartFromBase64, GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 import { HuntError } from "@/lib/hunting/errors";
 
-// "gemini-flash-latest" apunta siempre al Flash vigente de la capa gratuita; se puede fijar con GEMINI_MODEL.
-export const GEMINI_MODEL = process.env.GEMINI_MODEL || "gemini-flash-latest";
+// Alias que Google mantiene apuntando al Flash vigente de la capa gratuita (los nombres con versión
+// se retiran: gemini-2.5-flash ya devuelve 404). Si el primero está saturado (429/503) se usa el siguiente.
+export const GEMINI_MODELS = (process.env.GEMINI_MODELS || "gemini-flash-latest,gemini-flash-lite-latest")
+  .split(",")
+  .map((m) => m.trim())
+  .filter(Boolean);
+
+function isOverloaded(err: unknown) {
+  return err instanceof ApiError && (err.status === 429 || err.status === 503);
+}
+
+/** Llama a Gemini probando cada modelo de GEMINI_MODELS mientras el anterior esté saturado. */
+async function withModelFallback<T>(call: (model: string) => Promise<T>): Promise<T> {
+  let lastError: unknown;
+  for (const model of GEMINI_MODELS) {
+    try {
+      return await call(model);
+    } catch (err) {
+      lastError = err;
+      if (!isOverloaded(err)) break;
+    }
+  }
+  throw lastError;
+}
 const GEMINI_TIMEOUT_MS = 30_000;
 // Puntuar 40 perfiles de una sola vez tarda más que leer una imagen.
 const GEMINI_PIPELINE_TIMEOUT_MS = 90_000;
@@ -18,6 +40,23 @@ export function gemini() {
   return new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 }
 
+// Restricciones que Gemini acepta de a una pero rechaza combinadas ("schema too complex" → 400).
+const CONSTRAINT_KEYS = new Set([
+  "$schema", "minLength", "maxLength", "minItems", "maxItems", "minimum", "maximum", "pattern", "format",
+]);
+
+/** Esquema para Gemini: solo la estructura (campos y tipos). Los límites los valida Zod después. */
+export function toGeminiSchema(schema: z.ZodType): unknown {
+  const strip = (node: unknown): unknown => {
+    if (Array.isArray(node)) return node.map(strip);
+    if (!node || typeof node !== "object") return node;
+    return Object.fromEntries(
+      Object.entries(node).filter(([key]) => !CONSTRAINT_KEYS.has(key)).map(([key, value]) => [key, strip(value)]),
+    );
+  };
+  return strip(z.toJSONSchema(schema));
+}
+
 /**
  * Pide JSON con el esquema dado y lo valida con Zod (la salida de un LLM nunca se guarda sin validar).
  * Si el JSON no cumple, reintenta una vez; si vuelve a fallar → AI_BUSY.
@@ -27,16 +66,16 @@ export async function generateJson<T>(prompt: string, schema: z.ZodType<T>): Pro
   for (let attempt = 0; attempt < 2; attempt++) {
     let text: string;
     try {
-      const response = await ai.models.generateContent({
-        model: GEMINI_MODEL,
+      const response = await withModelFallback((model) => ai.models.generateContent({
+        model,
         contents: prompt,
         config: {
           responseMimeType: "application/json",
-          responseJsonSchema: z.toJSONSchema(schema),
+          responseJsonSchema: toGeminiSchema(schema),
           temperature: 0.2,
           abortSignal: AbortSignal.timeout(GEMINI_PIPELINE_TIMEOUT_MS),
         },
-      });
+      }));
       text = response.text ?? "";
     } catch (err) {
       console.error("Gemini generateJson", err instanceof ApiError ? err.status : err);
@@ -56,8 +95,8 @@ export async function generateJson<T>(prompt: string, schema: z.ZodType<T>): Pro
 export async function readWithGemini(bytes: Uint8Array, mimeType: string) {
   const ai = gemini();
   try {
-    const response = await ai.models.generateContent({
-      model: GEMINI_MODEL,
+    const response = await withModelFallback((model) => ai.models.generateContent({
+      model,
       contents: [
         {
           role: "user",
@@ -73,7 +112,7 @@ export async function readWithGemini(bytes: Uint8Array, mimeType: string) {
         },
       ],
       config: { abortSignal: AbortSignal.timeout(GEMINI_TIMEOUT_MS) },
-    });
+    }));
     return response.text ?? "";
   } catch (err) {
     // 400: Gemini no pudo leer el archivo. 429/5xx/timeout: la capa gratuita está saturada.
