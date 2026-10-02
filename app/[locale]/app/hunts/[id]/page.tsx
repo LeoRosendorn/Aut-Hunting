@@ -1,6 +1,7 @@
 import { ArrowLeft, CircleCheck } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { StatusBadge, type HuntStatus } from "@/components/hunts/status-badge";
 import { LocalTime } from "@/components/local-time";
@@ -11,7 +12,8 @@ type Params = PageProps<"/[locale]/app/hunts/[id]">;
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
-async function loadHunt(id: string) {
+// cache(): generateMetadata y la página comparten una sola consulta por request.
+const loadHunt = cache(async (id: string) => {
   if (!UUID.test(id)) return null;
   const supabase = await createClient();
   // RLS: si el hunting es de otra usuaria, no vuelve ninguna fila → 404 (criterio 3).
@@ -21,7 +23,7 @@ async function loadHunt(id: string) {
     .eq("id", id)
     .maybeSingle();
   return data;
-}
+});
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { id } = await params;
