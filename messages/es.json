@@ -60,9 +60,76 @@
     "greeting": "Hola, {name}",
     "subtitle": "Tus búsquedas de talento en un solo lugar.",
     "newHunt": "Nuevo hunting",
-    "quota": "{remaining} de {total} huntings disponibles hoy",
     "emptyTitle": "Todavía no hiciste ningún hunting",
     "emptyBody": "Subí una Job Description y te devolvemos entre 20 y 30 perfiles ordenados por afinidad.",
-    "comingSoon": "Muy pronto"
+    "historyTitle": "Tus huntings",
+    "colTitle": "Búsqueda",
+    "colStatus": "Estado",
+    "colDate": "Fecha",
+    "quotaLeft": "Te quedan {remaining} de {total} huntings hoy",
+    "quotaNone": "Usaste los {total} huntings de hoy. Se renuevan a las 00:00 UTC."
+  },
+  "status": {
+    "pending": "En cola",
+    "parsing": "Leyendo la JD",
+    "searching": "Buscando perfiles",
+    "scoring": "Ordenando por afinidad",
+    "done": "Listo",
+    "failed": "Con error"
+  },
+  "newHunt": {
+    "title": "Nuevo hunting",
+    "subtitle": "Pegá la Job Description o subí el archivo. Nosotros hacemos el resto.",
+    "dropTitle": "Pegá la Job Description acá",
+    "dropHint": "o arrastrá un archivo: PDF, Word (.docx), TXT o una captura (PNG, JPG). Hasta 4 MB.",
+    "dropActive": "Soltalo para cargar la JD",
+    "chooseFile": "Elegir archivo",
+    "removeFile": "Quitar archivo",
+    "placeholder": "Ej.: Buscamos QA Automation Senior con experiencia en Cypress o Playwright, inglés intermedio, para un equipo en Buenos Aires…",
+    "chars": "{count} caracteres",
+    "minChars": "Mínimo {min} caracteres",
+    "country": "País de los candidatos",
+    "countryAuto": "Automático (según la JD)",
+    "language": "Idioma de los perfiles",
+    "titleLabel": "Nombre del hunting (opcional)",
+    "titlePlaceholder": "Ej.: QA Senior – Cliente X",
+    "submit": "Buscar perfiles",
+    "submitting": "Leyendo la JD…",
+    "privacy": "No incluyas datos confidenciales del cliente en la JD.",
+    "langs": {
+      "es": "Español",
+      "en": "Inglés",
+      "pt": "Portugués"
+    },
+    "errors": {
+      "JD_TOO_SHORT": "La JD es muy corta. Pegá la descripción completa (mínimo 200 caracteres).",
+      "JD_TOO_LONG": "La JD es demasiado larga (máximo 30.000 caracteres).",
+      "FILE_TOO_LARGE": "El archivo pesa más de 4 MB. Probá con un PDF más liviano o pegá el texto.",
+      "UNSUPPORTED_FILE": "Ese tipo de archivo no se puede leer. Usá PDF, Word (.docx), TXT o una imagen.",
+      "JD_UNREADABLE": "No pudimos leer texto en el archivo. Probá pegando el texto de la JD.",
+      "AI_NOT_CONFIGURED": "Leer imágenes y PDF escaneados todavía no está activo. Pegá el texto o subí un PDF/Word con texto.",
+      "DAILY_LIMIT": "Llegaste al límite de huntings de hoy. Se renueva a las 00:00 UTC.",
+      "INVALID_INPUT": "Revisá los datos del formulario.",
+      "INTERNAL": "Algo salió mal. Probá de nuevo en unos segundos.",
+      "UNAUTHORIZED": "Tu sesión venció. Ingresá de nuevo."
+    }
+  },
+  "hunt": {
+    "back": "Volver a mis huntings",
+    "jdTitle": "Job Description",
+    "source": "Origen",
+    "country": "País",
+    "language": "Idioma",
+    "sources": {
+      "text": "Texto pegado",
+      "pdf": "PDF",
+      "docx": "Word",
+      "txt": "TXT",
+      "image": "Imagen"
+    },
+    "pendingTitle": "JD cargada correctamente",
+    "pendingBody": "La leímos y la guardamos. La búsqueda automática de perfiles se activa en el próximo paso del proyecto.",
+    "showJd": "Ver la JD completa",
+    "hideJd": "Ocultar la JD"
   }
 }

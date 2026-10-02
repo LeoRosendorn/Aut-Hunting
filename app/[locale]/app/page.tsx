@@ -1,11 +1,12 @@
 import { Plus, Radar } from "lucide-react";
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { StatusBadge, type HuntStatus } from "@/components/hunts/status-badge";
+import { buttonVariants } from "@/components/ui/button";
+import { Link } from "@/i18n/navigation";
+import { HUNTS_PER_DAY, remainingHuntsToday } from "@/lib/hunting/quota";
 import { createClient } from "@/lib/supabase/server";
-
-const HUNTS_PER_DAY = Number(process.env.HUNTS_PER_USER_PER_DAY ?? 5);
+import { cn } from "@/lib/utils";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/app">): Promise<Metadata> {
   const { locale } = await params;
@@ -17,40 +18,70 @@ export default async function DashboardPage({ params }: PageProps<"/[locale]/app
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("dashboard");
+  const format = await getFormatter();
 
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("full_name")
-    .eq("id", auth.user!.id)
-    .maybeSingle();
+  const [{ data: profile }, { data: hunts }, remaining] = await Promise.all([
+    supabase.from("profiles").select("full_name").eq("id", auth.user!.id).maybeSingle(),
+    supabase.from("hunts").select("id, title, status, created_at").order("created_at", { ascending: false }).limit(50),
+    remainingHuntsToday(supabase),
+  ]);
   const name = profile?.full_name?.split(" ")[0] || auth.user!.email?.split("@")[0] || "";
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-extrabold">{t("greeting", { name })}</h1>
+          <h1 className="text-3xl font-extrabold sm:text-4xl">{t("greeting", { name })}</h1>
           <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="secondary">{t("quota", { remaining: HUNTS_PER_DAY, total: HUNTS_PER_DAY })}</Badge>
-          {/* Se habilita con el issue #3 (ingesta de JD). */}
-          <Button size="lg" className="h-11" disabled title={t("comingSoon")}>
+        <div className="flex flex-col items-start gap-2 sm:items-end">
+          <Link href="/app/hunts/new" className={cn(buttonVariants({ size: "lg" }), "h-12 px-5 text-base")}>
             <Plus />
             {t("newHunt")}
-          </Button>
+          </Link>
+          <p className="text-sm text-muted-foreground">
+            {remaining > 0
+              ? t("quotaLeft", { remaining, total: HUNTS_PER_DAY })
+              : t("quotaNone", { total: HUNTS_PER_DAY })}
+          </p>
         </div>
       </div>
 
-      <section className="flex flex-col items-center gap-4 rounded-2xl border border-dashed bg-card px-6 py-20 text-center">
-        <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4f46e5] to-[#06b6d4] text-white shadow-lg shadow-indigo-500/20">
-          <Radar className="size-8" />
-        </div>
-        <h2 className="text-xl font-bold">{t("emptyTitle")}</h2>
-        <p className="max-w-md text-muted-foreground">{t("emptyBody")}</p>
-      </section>
+      {hunts && hunts.length > 0 ? (
+        <section className="space-y-3">
+          <h2 className="text-xl font-bold">{t("historyTitle")}</h2>
+          <ul className="divide-y rounded-xl border bg-card">
+            {hunts.map((h) => (
+              <li key={h.id}>
+                <Link
+                  href={`/app/hunts/${h.id}`}
+                  className="flex flex-col gap-1 px-5 py-4 transition-colors hover:bg-muted/60 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
+                >
+                  <span className="truncate font-semibold">{h.title}</span>
+                  <span className="flex shrink-0 items-center gap-3">
+                    <StatusBadge status={h.status as HuntStatus} />
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {format.dateTime(new Date(h.created_at), { dateStyle: "medium", timeStyle: "short" })}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : (
+        <section className="flex flex-col items-start gap-4 rounded-xl border border-dashed bg-card px-6 py-12 sm:px-10">
+          <Radar className="size-8 text-primary" />
+          <h2 className="text-xl font-bold">{t("emptyTitle")}</h2>
+          <p className="max-w-md text-muted-foreground">{t("emptyBody")}</p>
+          <Link href="/app/hunts/new" className={buttonVariants({ size: "lg" })}>
+            <Plus />
+            {t("newHunt")}
+          </Link>
+        </section>
+      )}
     </div>
   );
 }

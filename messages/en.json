@@ -60,9 +60,76 @@
     "greeting": "Hi, {name}",
     "subtitle": "All your talent searches in one place.",
     "newHunt": "New hunt",
-    "quota": "{remaining} of {total} hunts left today",
     "emptyTitle": "You haven't run any hunts yet",
     "emptyBody": "Upload a Job Description and we'll return 20 to 30 profiles ranked by match.",
-    "comingSoon": "Coming soon"
+    "historyTitle": "Your hunts",
+    "colTitle": "Search",
+    "colStatus": "Status",
+    "colDate": "Date",
+    "quotaLeft": "{remaining} of {total} hunts left today",
+    "quotaNone": "You used all {total} hunts for today. They reset at 00:00 UTC."
+  },
+  "status": {
+    "pending": "Queued",
+    "parsing": "Reading the JD",
+    "searching": "Searching profiles",
+    "scoring": "Ranking by match",
+    "done": "Done",
+    "failed": "Failed"
+  },
+  "newHunt": {
+    "title": "New hunt",
+    "subtitle": "Paste the Job Description or upload the file. We do the rest.",
+    "dropTitle": "Paste the Job Description here",
+    "dropHint": "or drop a file: PDF, Word (.docx), TXT or a screenshot (PNG, JPG). Up to 4 MB.",
+    "dropActive": "Drop it to load the JD",
+    "chooseFile": "Choose file",
+    "removeFile": "Remove file",
+    "placeholder": "E.g.: We are looking for a Senior QA Automation engineer with Cypress or Playwright experience, intermediate English, for a team in Buenos Aires…",
+    "chars": "{count} characters",
+    "minChars": "At least {min} characters",
+    "country": "Candidates' country",
+    "countryAuto": "Automatic (from the JD)",
+    "language": "Profile language",
+    "titleLabel": "Hunt name (optional)",
+    "titlePlaceholder": "E.g.: Senior QA – Client X",
+    "submit": "Find profiles",
+    "submitting": "Reading the JD…",
+    "privacy": "Don't include confidential client data in the JD.",
+    "langs": {
+      "es": "Spanish",
+      "en": "English",
+      "pt": "Portuguese"
+    },
+    "errors": {
+      "JD_TOO_SHORT": "The JD is too short. Paste the full description (at least 200 characters).",
+      "JD_TOO_LONG": "The JD is too long (30,000 characters max).",
+      "FILE_TOO_LARGE": "The file is larger than 4 MB. Try a lighter PDF or paste the text.",
+      "UNSUPPORTED_FILE": "That file type can't be read. Use PDF, Word (.docx), TXT or an image.",
+      "JD_UNREADABLE": "We couldn't read any text in the file. Try pasting the JD text.",
+      "AI_NOT_CONFIGURED": "Reading images and scanned PDFs isn't active yet. Paste the text or upload a PDF/Word with text.",
+      "DAILY_LIMIT": "You reached today's hunt limit. It resets at 00:00 UTC.",
+      "INVALID_INPUT": "Check the form fields.",
+      "INTERNAL": "Something went wrong. Try again in a few seconds.",
+      "UNAUTHORIZED": "Your session expired. Please log in again."
+    }
+  },
+  "hunt": {
+    "back": "Back to my hunts",
+    "jdTitle": "Job Description",
+    "source": "Source",
+    "country": "Country",
+    "language": "Language",
+    "sources": {
+      "text": "Pasted text",
+      "pdf": "PDF",
+      "docx": "Word",
+      "txt": "TXT",
+      "image": "Image"
+    },
+    "pendingTitle": "JD uploaded successfully",
+    "pendingBody": "We read it and saved it. Automatic profile search turns on in the next project step.",
+    "showJd": "Show full JD",
+    "hideJd": "Hide JD"
   }
 }
