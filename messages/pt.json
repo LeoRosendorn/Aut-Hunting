@@ -129,10 +129,32 @@
       "txt": "TXT",
       "image": "Imagem"
     },
-    "pendingTitle": "JD carregada com sucesso",
-    "pendingBody": "Lemos e salvamos. A busca automática de perfis é ativada na próxima etapa do projeto.",
-    "showJd": "Ver a JD completa",
-    "hideJd": "Ocultar a JD"
+    "steps": {
+      "parsing": "Lendo a JD",
+      "searching": "Buscando perfis",
+      "scoring": "Ordenando por afinidade"
+    },
+    "progressHint": "Isso leva de 1 a 2 minutos. Pode ficar aqui: a página se atualiza sozinha.",
+    "pendingRunBody": "Este hunting ainda não buscou perfis.",
+    "runNow": "Buscar perfis agora",
+    "staleBody": "A busca foi interrompida. Você pode reiniciá-la sem gastar a cota diária.",
+    "retry": "Tentar de novo",
+    "summary": "<n>{total}</n> perfis · <n>{above}</n> acima de 80 de afinidade",
+    "scoreLabel": "Afinidade",
+    "viewProfile": "Ver perfil",
+    "booleanTitle": "String booleana para o LinkedIn",
+    "booleanHint": "Cole na busca do LinkedIn ou do LinkedIn Recruiter para continuar procurando.",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "errors": {
+      "AI_BUSY": "A IA está sobrecarregada agora e não conseguimos terminar a busca. Tente criar o hunting de novo em alguns minutos.",
+      "AI_NOT_CONFIGURED": "A IA ainda não está configurada no app.",
+      "SEARCH_BUSY": "O buscador não respondeu. Tente criar o hunting de novo em alguns minutos.",
+      "SEARCH_NOT_CONFIGURED": "O buscador ainda não está configurado no app.",
+      "SEARCH_QUOTA_EXHAUSTED": "A cota gratuita de buscas do mês acabou para todo o app. Renova no dia 1.",
+      "NO_RESULTS": "Não encontramos perfis públicos para esta JD. Tente outro país ou use a string booleana no LinkedIn.",
+      "INTERNAL": "Algo deu errado durante a busca. Tente criar o hunting de novo."
+    }
   },
   "notFound": {
     "title": "Não encontramos esta página",

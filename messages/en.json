@@ -129,10 +129,32 @@
       "txt": "TXT",
       "image": "Image"
     },
-    "pendingTitle": "JD uploaded successfully",
-    "pendingBody": "We read it and saved it. Automatic profile search turns on in the next project step.",
-    "showJd": "Show full JD",
-    "hideJd": "Hide JD"
+    "steps": {
+      "parsing": "Reading the JD",
+      "searching": "Searching profiles",
+      "scoring": "Ranking by match"
+    },
+    "progressHint": "This takes 1 to 2 minutes. You can stay here: the page updates on its own.",
+    "pendingRunBody": "This hunt hasn't searched for profiles yet.",
+    "runNow": "Search profiles now",
+    "staleBody": "The search was interrupted. You can restart it without using your daily quota.",
+    "retry": "Retry",
+    "summary": "<n>{total}</n> profiles · <n>{above}</n> above 80 match",
+    "scoreLabel": "Match",
+    "viewProfile": "View profile",
+    "booleanTitle": "Boolean string for LinkedIn",
+    "booleanHint": "Paste it in LinkedIn or LinkedIn Recruiter search to keep looking.",
+    "copy": "Copy",
+    "copied": "Copied",
+    "errors": {
+      "AI_BUSY": "The AI is busy right now and we couldn't finish the search. Try creating the hunt again in a few minutes.",
+      "AI_NOT_CONFIGURED": "The AI isn't configured in the app yet.",
+      "SEARCH_BUSY": "The search engine didn't respond. Try creating the hunt again in a few minutes.",
+      "SEARCH_NOT_CONFIGURED": "The search engine isn't configured in the app yet.",
+      "SEARCH_QUOTA_EXHAUSTED": "The app's free monthly search quota is used up. It resets on the 1st.",
+      "NO_RESULTS": "We couldn't find public profiles for this JD. Try another country or use the boolean string on LinkedIn.",
+      "INTERNAL": "Something went wrong during the search. Try creating the hunt again."
+    }
   },
   "notFound": {
     "title": "We couldn't find this page",
