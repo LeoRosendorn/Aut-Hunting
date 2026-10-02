@@ -51,9 +51,18 @@ describe("jd-input", () => {
     expect(normalizeJd("  Hola\r\n\r\n\r\n\tmundo   QA  ")).toBe("Hola\n\nmundo QA");
   });
 
-  it("título por defecto desde el archivo o la primera línea", () => {
-    expect(defaultTitle("x", "JD_QA-Senior.pdf")).toBe("JD QA Senior");
-    expect(defaultTitle("\n\nQA Senior\nresto")).toBe("QA Senior");
+  // Regression: ISSUE-001 — el título salía del nombre del archivo ("jd qa senior") en vez del puesto
+  // Found by /qa on 2026-10-01
+  // Report: .gstack/qa-reports/run-20261002T013757Z/qa-report-localhost-2026-10-01.md
+  it.each([
+    ["primera línea de la JD aunque haya archivo", "QA Automation Engineer Senior\nEmpresa: fintech", "jd-qa-senior.pdf", "QA Automation Engineer Senior"],
+    ["primera línea si no hay archivo", "\n\nQA Senior\nresto", undefined, "QA Senior"],
+    ["nombre del archivo si la primera línea es un párrafo largo", `${"Buscamos una persona ".repeat(6)}\nmás`, "JD_QA-Senior.pdf", "JD QA Senior"],
+  ])("título por defecto: %s", (_caso, text, file, expected) => {
+    expect(defaultTitle(text, file)).toBe(expected);
+  });
+
+  it("recorta títulos largos sin archivo", () => {
     expect(defaultTitle("a".repeat(100)).length).toBe(78);
   });
 });

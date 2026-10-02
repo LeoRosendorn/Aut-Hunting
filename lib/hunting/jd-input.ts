@@ -36,11 +36,14 @@ export function normalizeJd(text: string) {
     .trim();
 }
 
-/** Título por defecto: nombre del archivo sin extensión, o la primera línea de la JD. */
+/**
+ * Título por defecto: la primera línea de la JD, que casi siempre es el puesto.
+ * El nombre del archivo ("JD_final_v2.pdf") solo se usa si esa línea es un párrafo largo.
+ */
 export function defaultTitle(text: string, fileName?: string) {
-  const base = fileName?.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
   const firstLine = text.split("\n").find((l) => l.trim().length > 0)?.trim() ?? "";
-  const title = base || firstLine;
+  const base = fileName?.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " ").trim();
+  const title = firstLine.length <= 80 || !base ? firstLine : base;
   return title.length > 80 ? `${title.slice(0, 77)}…` : title;
 }
 
