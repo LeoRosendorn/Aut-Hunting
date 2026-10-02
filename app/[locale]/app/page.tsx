@@ -1,7 +1,8 @@
 import { Plus, Radar } from "lucide-react";
 import type { Metadata } from "next";
-import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { StatusBadge, type HuntStatus } from "@/components/hunts/status-badge";
+import { LocalTime } from "@/components/local-time";
 import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { HUNTS_PER_DAY, remainingHuntsToday } from "@/lib/hunting/quota";
@@ -18,7 +19,6 @@ export default async function DashboardPage({ params }: PageProps<"/[locale]/app
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("dashboard");
-  const format = await getFormatter();
 
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
@@ -62,9 +62,7 @@ export default async function DashboardPage({ params }: PageProps<"/[locale]/app
                   <span className="truncate font-semibold">{h.title}</span>
                   <span className="flex shrink-0 items-center gap-3">
                     <StatusBadge status={h.status as HuntStatus} />
-                    <span className="font-mono text-xs text-muted-foreground">
-                      {format.dateTime(new Date(h.created_at), { dateStyle: "medium", timeStyle: "short" })}
-                    </span>
+                    <LocalTime iso={h.created_at} className="min-w-32 font-mono text-xs text-muted-foreground" />
                   </span>
                 </Link>
               </li>

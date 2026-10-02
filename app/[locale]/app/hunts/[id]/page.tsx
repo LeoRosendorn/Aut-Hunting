@@ -1,8 +1,9 @@
 import { ArrowLeft, CircleCheck } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getFormatter, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { StatusBadge, type HuntStatus } from "@/components/hunts/status-badge";
+import { LocalTime } from "@/components/local-time";
 import { Link } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 
@@ -36,7 +37,6 @@ export default async function HuntPage({ params }: Params) {
 
   const t = await getTranslations("hunt");
   const tn = await getTranslations("newHunt");
-  const format = await getFormatter();
   const country =
     hunt.country === "auto"
       ? tn("countryAuto")
@@ -67,7 +67,7 @@ export default async function HuntPage({ params }: Params) {
             <dt>{t("language")}:</dt>
             <dd className="text-foreground">{tn(`langs.${hunt.profile_language}`)}</dd>
           </div>
-          <div className="font-mono">{format.dateTime(new Date(hunt.created_at), { dateStyle: "medium", timeStyle: "short" })}</div>
+          <LocalTime iso={hunt.created_at} className="font-mono" />
         </dl>
       </div>
 
