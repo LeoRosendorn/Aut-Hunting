@@ -10,3 +10,11 @@ export const signupSchema = z.object({
   email: z.email({ error: "invalidEmail" }),
   password: z.string().min(8, { error: "weakPassword" }).max(72, { error: "weakPassword" }),
 });
+
+export const forgotSchema = z.object({
+  email: z.email({ error: "invalidEmail" }),
+});
+
+export const newPasswordSchema = z.object({
+  password: z.string().min(8, { error: "weakPassword" }).max(72, { error: "weakPassword" }),
+});

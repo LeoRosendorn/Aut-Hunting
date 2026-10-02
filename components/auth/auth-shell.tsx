@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 /** Pantalla partida: panel de marca a la izquierda (desktop) y formulario a la derecha. */
 export function AuthShell({ children }: { children: React.ReactNode }) {
   const t = useTranslations("landing");
+  const tf = useTranslations("footer");
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
@@ -31,9 +32,17 @@ export function AuthShell({ children }: { children: React.ReactNode }) {
             <ThemeToggle />
           </div>
         </div>
-        <div className="flex flex-1 items-center justify-center px-4 pb-16">
+        <div className="flex flex-1 items-center justify-center px-4 pb-10">
           <div className="w-full max-w-sm">{children}</div>
         </div>
+        <nav aria-label={tf("legal")} className="flex justify-center gap-6 pb-6 text-xs text-muted-foreground">
+          <Link href="/privacy" className="hover:text-foreground">
+            {tf("privacy")}
+          </Link>
+          <Link href="/terms" className="hover:text-foreground">
+            {tf("terms")}
+          </Link>
+        </nav>
       </main>
     </div>
   );

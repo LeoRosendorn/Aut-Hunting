@@ -1,9 +1,9 @@
-import { LogOut } from "lucide-react";
+import { LogOut, Settings } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { Logo } from "@/components/brand/logo";
 import { LocaleSwitcher } from "@/components/brand/locale-switcher";
 import { ThemeToggle } from "@/components/brand/theme-toggle";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Link, redirect } from "@/i18n/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { signOut } from "../(auth)/actions";
@@ -28,6 +28,10 @@ export default async function AppLayout({ children }: LayoutProps<"/[locale]/app
             <span className="mr-2 hidden max-w-[16rem] truncate text-sm text-muted-foreground md:inline">{email}</span>
             <LocaleSwitcher />
             <ThemeToggle />
+            <Link href="/app/settings" aria-label={t("settings")} className={buttonVariants({ variant: "ghost", size: "sm" })}>
+              <Settings />
+              <span className="hidden sm:inline">{t("settings")}</span>
+            </Link>
             <form action={signOut}>
               <Button type="submit" variant="ghost" size="sm">
                 <LogOut />

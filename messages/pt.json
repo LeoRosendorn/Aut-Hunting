@@ -24,8 +24,94 @@
     "step2Title": "Buscamos por você",
     "step2Body": "Rastreamos perfis públicos compatíveis e removemos duplicados.",
     "step3Title": "Contate os melhores",
-    "step3Body": "20 a 30 perfis com nota de afinidade, motivos e uma mensagem personalizada.",
-    "footnote": "O AI-Hunting não acessa sua conta do LinkedIn nem envia mensagens por você."
+    "step3Body": "20 a 30 perfis com pontuação de afinidade, motivos e uma mensagem personalizada pronta para copiar.",
+    "footnote": "O AI-Hunting não acessa sua conta do LinkedIn nem envia mensagens por você.",
+    "heroNote": "Sem cartão · 5 huntings por dia · Espanhol, inglês e português",
+    "previewLabel": "Exemplo de resultado de um hunting",
+    "previewTitle": "QA Automation Sênior · Buenos Aires",
+    "previewStatus": "Pronto",
+    "preview": [
+      {
+        "name": "Lucía Fernández",
+        "headline": "QA Automation · Playwright e Cypress",
+        "score": 92
+      },
+      {
+        "name": "Martín Sosa",
+        "headline": "SDET · Java, Selenium, CI/CD",
+        "score": 86
+      },
+      {
+        "name": "Carla Méndez",
+        "headline": "QA Analyst · Testes de API com Postman",
+        "score": 71
+      }
+    ],
+    "previewNote": "Exemplo ilustrativo com dados fictícios.",
+    "featuresTitle": "Tudo o que você precisa para chegar ao primeiro contato",
+    "featuresSubtitle": "Da Job Description à mensagem enviada, sem planilhas nem abas a mais.",
+    "features": [
+      {
+        "title": "Ranking por afinidade",
+        "body": "Cada perfil vem com uma pontuação de 0 a 100, por que combina e o que falta, para você decidir rápido para quem escrever."
+      },
+      {
+        "title": "Mensagem personalizada",
+        "body": "Um convite curto e uma mensagem mais longa escritos para cada pessoa, com base no perfil. Edite, toque em Copiar e cole no LinkedIn."
+      },
+      {
+        "title": "Acompanhamento de candidatos",
+        "body": "Mova cada pessoa de Contatado para Respondeu e Entrevista, e anote o que importa. Veja o andamento de cada busca num relance."
+      },
+      {
+        "title": "String booleana",
+        "body": "Além dos perfis, você recebe a busca booleana pronta para colar no LinkedIn ou no LinkedIn Recruiter."
+      },
+      {
+        "title": "A JD como você tiver",
+        "body": "Cole o texto ou envie um PDF, um Word, um TXT ou uma captura de tela."
+      },
+      {
+        "title": "Três idiomas",
+        "body": "O app funciona em espanhol, inglês e português, e você pode buscar perfis em qualquer um deles."
+      }
+    ],
+    "pipelineTitle": "Acompanhe cada candidato sem planilhas",
+    "pipelineBody": "Cada hunting tem seu pipeline. Quando você copia a mensagem, oferecemos mover a pessoa para Contatado; depois você a move quando ela responde ou quando agenda a entrevista.",
+    "trustTitle": "Transparente desde o início",
+    "trustBody": "O AI-Hunting trabalha só com informação pública e nunca age em seu nome.",
+    "trustLink": "Ler a política de privacidade",
+    "trust": [
+      "Não entra na sua conta do LinkedIn nem pede sua senha.",
+      "Não envia mensagens por você: você decide o que mandar e para quem.",
+      "Só usa perfis públicos que aparecem em buscadores.",
+      "Você pode excluir sua conta e todos os seus dados quando quiser."
+    ],
+    "faqTitle": "Perguntas frequentes",
+    "faq": [
+      {
+        "q": "É grátis mesmo?",
+        "a": "Sim. O AI-Hunting roda em planos gratuitos de serviços na nuvem. Para dar para todas, cada conta tem uma cota diária: 5 huntings e 60 mensagens por dia."
+      },
+      {
+        "q": "De onde vêm os perfis?",
+        "a": "De buscadores que indexam perfis públicos do LinkedIn. Não usamos sua conta nem acessamos o LinkedIn: por isso não vemos perfis privados nem dados de contato."
+      },
+      {
+        "q": "Preciso do LinkedIn Recruiter?",
+        "a": "Não. Com uma conta comum do LinkedIn você abre os perfis e envia o convite com a mensagem. Se tiver o Recruiter, a string booleana ajuda a continuar buscando."
+      },
+      {
+        "q": "O que acontece com a Job Description que eu envio?",
+        "a": "Só o texto é guardado, na sua conta privada. Para lê-la usamos a camada gratuita do Google Gemini, que pode usar esse conteúdo para melhorar seus serviços: não inclua dados confidenciais do cliente."
+      },
+      {
+        "q": "Posso apagar meus dados?",
+        "a": "Sim. Em Ajustes → Excluir conta, seu usuário, seus huntings, os candidatos, as mensagens e as notas são apagados na hora."
+      }
+    ],
+    "finalTitle": "Seu próximo hunting, em dois minutos",
+    "finalBody": "Crie sua conta grátis e envie a primeira Job Description."
   },
   "auth": {
     "loginTitle": "Bem-vinda de volta",
@@ -53,8 +139,21 @@
       "userExists": "Já existe uma conta com esse e-mail.",
       "rateLimited": "Muitas tentativas. Aguarde alguns minutos e tente de novo.",
       "callback": "Não conseguimos concluir o login. Tente de novo.",
-      "generic": "Algo deu errado. Tente de novo."
-    }
+      "generic": "Algo deu errado. Tente de novo.",
+      "samePassword": "A nova senha precisa ser diferente da anterior.",
+      "linkExpired": "O link expirou ou já foi usado. Peça um novo."
+    },
+    "forgotLink": "Esqueceu sua senha?",
+    "forgotTitle": "Recupere sua senha",
+    "forgotSubtitle": "Enviamos um link para você escolher uma nova.",
+    "forgotSubmit": "Enviar link",
+    "resetTitle": "Escolha uma nova senha",
+    "resetSubtitle": "Depois você vai direto para seus huntings.",
+    "resetSubmit": "Salvar senha",
+    "newPassword": "Nova senha",
+    "resetEmailSent": "Se {email} tiver uma conta, você vai receber um link para escolher uma nova senha. Se não aparecer, procure no spam.",
+    "backToLogin": "Voltar para entrar",
+    "legalConsent": "Ao criar sua conta você aceita os <terms>Termos</terms> e a <privacy>Política de privacidade</privacy>."
   },
   "dashboard": {
     "greeting": "Olá, {name}",
@@ -195,5 +294,142 @@
     "title": "Não encontramos esta página",
     "body": "O link pode estar errado ou o hunting pode não existir mais.",
     "back": "Ir para meus huntings"
+  },
+  "footer": {
+    "disclaimer": "O AI-Hunting não entra na sua conta do LinkedIn nem envia mensagens por você. Projeto gratuito e independente, sem relação com o LinkedIn.",
+    "legal": "Informações legais",
+    "privacy": "Privacidade",
+    "terms": "Termos",
+    "contact": "Contato"
+  },
+  "settings": {
+    "title": "Ajustes",
+    "subtitle": "Seus dados e sua conta.",
+    "profileTitle": "Perfil",
+    "email": "Email",
+    "fullName": "Nome e sobrenome",
+    "fullNameHint": "Usamos para assinar as mensagens de contato.",
+    "save": "Salvar",
+    "saved": "Salvo",
+    "saveError": "Não conseguimos salvar. Confira o nome e tente de novo.",
+    "deleteTitle": "Excluir conta",
+    "deleteBody": "Seu usuário, seus huntings, os candidatos, as mensagens e as notas são apagados para sempre. Não dá para desfazer.",
+    "deleteButton": "Excluir minha conta",
+    "deleteConfirmLabel": "Para confirmar, digite seu email ({email})",
+    "deleteConfirm": "Excluir definitivamente",
+    "deleteError": "Não conseguimos excluir a conta. Tente de novo em alguns minutos.",
+    "cancel": "Cancelar"
+  },
+  "legal": {
+    "updated": "Última atualização: {date}",
+    "updatedDate": "2 de outubro de 2026",
+    "privacy": {
+      "title": "Política de privacidade",
+      "intro": "Esta política explica quais dados o AI-Hunting usa, para quê e como você pode apagá-los. O AI-Hunting é um projeto gratuito e independente; para qualquer dúvida, escreva para {email}.",
+      "sections": [
+        {
+          "title": "Dados da sua conta",
+          "body": [
+            "Quando você se cadastra guardamos seu nome, seu email, seu idioma preferido e, se entrar com email, sua senha criptografada. Se entrar com o Google, o Google compartilha só seu nome, seu email e sua foto de perfil; não acessamos seu Gmail, seu Drive nem nenhum outro serviço do Google.",
+            "Usamos esses dados só para você entrar, para mostrar suas buscas e para assinar as mensagens de contato com seu nome."
+          ]
+        },
+        {
+          "title": "Job Descriptions e resultados",
+          "body": [
+            "De cada Job Description guardamos o texto extraído; o arquivo original não é guardado. Também guardamos os resultados de cada busca, as mensagens geradas, as etapas do pipeline e as notas que você escrever.",
+            "Tudo isso é privado: só você pode ver. O banco de dados aplica controles de acesso por usuária."
+          ]
+        },
+        {
+          "title": "Dados dos candidatos",
+          "body": [
+            "Os perfis que mostramos vêm de informação pública indexada por buscadores: nome, título, link do perfil e um trecho público. Não entramos no LinkedIn, não usamos sua conta nem obtemos emails ou telefones.",
+            "Você é responsável pelo uso que fizer desses perfis e das suas mensagens, conforme a lei de proteção de dados que se aplica a você (como a LGPD). Se você aparece nos resultados e quer que apaguemos seus dados, escreva para {email}."
+          ]
+        },
+        {
+          "title": "Serviços que usamos",
+          "body": [
+            "Supabase (banco de dados e login), Vercel (hospedagem do site), Google Gemini (inteligência artificial que lê a JD, pontua perfis e escreve mensagens), Exa e Tavily (buscadores: recebem as consultas de busca, não a JD completa), Brevo (emails da conta) e Google (login, se você escolher).",
+            "Usamos a camada gratuita do Gemini: o Google pode usar o conteúdo enviado para melhorar seus produtos. Por isso pedimos que você não inclua dados confidenciais do cliente na Job Description."
+          ]
+        },
+        {
+          "title": "O que não fazemos",
+          "body": [
+            "Não vendemos nem compartilhamos seus dados para fins comerciais, não mostramos publicidade e não usamos ferramentas de rastreamento de terceiros."
+          ]
+        },
+        {
+          "title": "Por quanto tempo guardamos os dados",
+          "body": [
+            "Enquanto você tiver sua conta. Ao excluí-la em Ajustes, seu usuário, seus huntings, os candidatos, as mensagens e as notas são apagados na hora. Ficam só registros anônimos de uso (por exemplo, quantas buscas foram feitas no dia) para controlar as cotas gratuitas."
+          ]
+        },
+        {
+          "title": "Seus direitos",
+          "body": [
+            "Você pode ver e corrigir seus dados no app, mudar seu nome em Ajustes e apagar tudo com Excluir conta. Para qualquer outro pedido de acesso, correção ou exclusão, escreva para {email} e respondemos em até 30 dias."
+          ]
+        },
+        {
+          "title": "Mudanças",
+          "body": [
+            "Se mudarmos esta política, atualizamos a data acima. Se a mudança for importante, avisamos dentro do app."
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "title": "Termos de uso",
+      "intro": "Ao criar uma conta no AI-Hunting você aceita estes termos. Se tiver dúvidas, escreva para {email}.",
+      "sections": [
+        {
+          "title": "O serviço",
+          "body": [
+            "O AI-Hunting ajuda recrutadoras a encontrar perfis públicos do LinkedIn a partir de uma Job Description, escrever a primeira mensagem e acompanhar cada candidato. É gratuito e oferecido como está, sem garantia de disponibilidade contínua.",
+            "Para dar para todas há cotas diárias por conta (hoje: 5 huntings e 60 mensagens por dia) e cotas mensais para todo o app. Podemos mudar essas cotas ou o serviço, e avisaremos as mudanças importantes."
+          ]
+        },
+        {
+          "title": "Sua conta",
+          "body": [
+            "Cada conta é de uma única pessoa maior de 18 anos. Cuide da sua senha: você é responsável pelo que for feito com sua conta."
+          ]
+        },
+        {
+          "title": "Uso aceitável",
+          "body": [
+            "Use o AI-Hunting só para recrutamento legítimo. Não é permitido enviar spam, assediar candidatos, discriminar por características protegidas por lei, coletar dados para vendê-los nem violar os termos do LinkedIn.",
+            "Também não é permitido automatizar o uso do app, tentar burlar as cotas ou acessar dados de outras pessoas. Podemos suspender contas que fizerem isso."
+          ]
+        },
+        {
+          "title": "Seu conteúdo",
+          "body": [
+            "Você é responsável pelas Job Descriptions que envia e pelas mensagens que manda. Não inclua dados confidenciais do cliente: a JD é processada com a camada gratuita do Google Gemini."
+          ]
+        },
+        {
+          "title": "Resultados da IA",
+          "body": [
+            "Pontuações, motivos e mensagens são gerados por inteligência artificial e podem ter erros. São uma ajuda, não uma decisão de contratação: revise cada perfil e cada mensagem antes de usar."
+          ]
+        },
+        {
+          "title": "Responsabilidade",
+          "body": [
+            "Na medida permitida pela lei, o AI-Hunting não se responsabiliza por danos decorrentes do uso do serviço, da sua indisponibilidade ou dos resultados de busca."
+          ]
+        },
+        {
+          "title": "Saída",
+          "body": [
+            "Você pode parar de usar o AI-Hunting e excluir sua conta quando quiser em Ajustes → Excluir conta."
+          ]
+        }
+      ]
+    }
   }
 }
