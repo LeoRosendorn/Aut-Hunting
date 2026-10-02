@@ -111,7 +111,9 @@
       "DAILY_LIMIT": "Llegaste al límite de huntings de hoy. Se renueva a las 00:00 UTC.",
       "INVALID_INPUT": "Revisá los datos del formulario.",
       "INTERNAL": "Algo salió mal. Probá de nuevo en unos segundos.",
-      "UNAUTHORIZED": "Tu sesión venció. Ingresá de nuevo."
+      "UNAUTHORIZED": "Tu sesión venció. Ingresá de nuevo.",
+      "AI_LIMIT": "Usaste las lecturas con IA de hoy (imágenes y PDF escaneados). Pegá el texto o subí un PDF/Word con texto.",
+      "AI_BUSY": "La IA está saturada en este momento. Probá en unos minutos o pegá el texto de la JD."
     }
   },
   "hunt": {

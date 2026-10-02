@@ -24,6 +24,8 @@ type ErrorKey =
   | "UNSUPPORTED_FILE"
   | "JD_UNREADABLE"
   | "AI_NOT_CONFIGURED"
+  | "AI_LIMIT"
+  | "AI_BUSY"
   | "DAILY_LIMIT"
   | "INVALID_INPUT"
   | "INTERNAL"
@@ -31,11 +33,11 @@ type ErrorKey =
 
 const KNOWN_ERRORS = new Set<string>([
   "JD_TOO_SHORT", "JD_TOO_LONG", "FILE_TOO_LARGE", "UNSUPPORTED_FILE", "JD_UNREADABLE",
-  "AI_NOT_CONFIGURED", "DAILY_LIMIT", "INVALID_INPUT", "INTERNAL", "UNAUTHORIZED",
+  "AI_NOT_CONFIGURED", "AI_LIMIT", "AI_BUSY", "DAILY_LIMIT", "INVALID_INPUT", "INTERNAL", "UNAUTHORIZED",
 ]);
 
 function formatBytes(bytes: number) {
-  return bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+  return bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
 export function NewHuntForm({ remaining }: { remaining: number }) {

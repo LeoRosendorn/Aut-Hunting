@@ -111,7 +111,9 @@
       "DAILY_LIMIT": "Você atingiu o limite de huntings de hoje. Renova às 00:00 UTC.",
       "INVALID_INPUT": "Revise os campos do formulário.",
       "INTERNAL": "Algo deu errado. Tente de novo em alguns segundos.",
-      "UNAUTHORIZED": "Sua sessão expirou. Entre novamente."
+      "UNAUTHORIZED": "Sua sessão expirou. Entre novamente.",
+      "AI_LIMIT": "Você usou as leituras com IA de hoje (imagens e PDFs escaneados). Cole o texto ou envie um PDF/Word com texto.",
+      "AI_BUSY": "A IA está sobrecarregada agora. Tente em alguns minutos ou cole o texto da JD."
     }
   },
   "hunt": {

@@ -20,6 +20,25 @@ const BY_EXTENSION: Record<string, Exclude<JdSource, "text">> = {
 
 export const ACCEPT_ATTR = ".pdf,.docx,.txt,.md,.png,.jpg,.jpeg,.webp";
 
+/** MIME que se le manda a Gemini: sale de la extensión, no del `file.type` que declara el navegador. */
+const MIME_BY_EXTENSION: Record<string, string> = {
+  pdf: "application/pdf",
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  webp: "image/webp",
+};
+
+export function mimeTypeFor(fileName: string) {
+  const ext = fileName.toLowerCase().split(".").pop() ?? "";
+  return MIME_BY_EXTENSION[ext] ?? "application/octet-stream";
+}
+
+/** Largo en caracteres reales (code points), igual que `char_length` de Postgres; `.length` cuenta mal los emojis. */
+export function charLength(text: string) {
+  return [...text].length;
+}
+
 /** Tipo de archivo por extensión: el MIME que manda el navegador no es confiable (Windows suele mandar vacío para .md/.docx). */
 export function detectSource(fileName: string): Exclude<JdSource, "text"> | null {
   const ext = fileName.toLowerCase().split(".").pop() ?? "";

@@ -6,6 +6,8 @@ export type HuntErrorCode =
   | "UNSUPPORTED_FILE"
   | "JD_UNREADABLE"
   | "AI_NOT_CONFIGURED"
+  | "AI_LIMIT"
+  | "AI_BUSY"
   | "DAILY_LIMIT"
   | "INVALID_INPUT"
   | "INTERNAL";

@@ -1,10 +1,16 @@
 import { readFileSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import JSZip from "jszip";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { HuntError } from "@/lib/hunting/errors";
 import { extractJdText } from "@/lib/hunting/extract";
-import { defaultTitle, detectSource, normalizeJd } from "@/lib/hunting/jd-input";
+import { charLength, defaultTitle, detectSource, mimeTypeFor, normalizeJd } from "@/lib/hunting/jd-input";
 
 const fixture = (name: string) => new Uint8Array(readFileSync(`tests/fixtures/jd/${name}`));
+const noAi = { mimeType: "", reserveAiCall: async () => true };
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 describe("extractJdText", () => {
   it.each([
@@ -12,26 +18,50 @@ describe("extractJdText", () => {
     ["docx", "jd-qa-senior.docx"],
     ["pdf", "jd-qa-senior.pdf"],
   ] as const)("lee %s localmente, sin IA", async (source, file) => {
-    const text = await extractJdText(source, fixture(file), "");
+    const text = await extractJdText(source, fixture(file), noAi);
     expect(text).toContain("QA Automation Engineer Senior");
     expect(text).toContain("Playwright");
     expect(text.length).toBeGreaterThan(200);
   });
 
   it("rechaza una JD de menos de 200 caracteres", async () => {
-    await expect(extractJdText("txt", fixture("jd-corta.txt"), "")).rejects.toMatchObject({ code: "JD_UNREADABLE" });
+    await expect(extractJdText("txt", fixture("jd-corta.txt"), noAi)).rejects.toMatchObject({ code: "JD_UNREADABLE" });
   });
 
   it("rechaza un archivo roto en vez de explotar", async () => {
     const roto = new TextEncoder().encode("esto no es un pdf");
-    await expect(extractJdText("pdf", roto, "")).rejects.toBeInstanceOf(HuntError);
+    await expect(extractJdText("pdf", roto, noAi)).rejects.toBeInstanceOf(HuntError);
   });
 
   it("sin clave de Gemini, una imagen da AI_NOT_CONFIGURED", async () => {
-    const prev = process.env.GEMINI_API_KEY;
-    delete process.env.GEMINI_API_KEY;
-    await expect(extractJdText("image", new Uint8Array([1, 2, 3]), "image/png")).rejects.toMatchObject({ code: "AI_NOT_CONFIGURED" });
-    if (prev) process.env.GEMINI_API_KEY = prev;
+    vi.stubEnv("GEMINI_API_KEY", "");
+    await expect(extractJdText("image", new Uint8Array([1, 2, 3]), { ...noAi, mimeType: "image/png" })).rejects.toMatchObject({
+      code: "AI_NOT_CONFIGURED",
+    });
+  });
+
+  // Regression: review 2026-10-01 — las imágenes que fallaban no gastaban cupo y permitían usar Gemini sin límite
+  it("sin cupo de IA no llama a Gemini y devuelve AI_LIMIT", async () => {
+    vi.stubEnv("GEMINI_API_KEY", "clave-de-prueba");
+    const reserveAiCall = vi.fn(async () => false);
+    await expect(extractJdText("image", new Uint8Array([1, 2, 3]), { mimeType: "image/png", reserveAiCall })).rejects.toMatchObject({
+      code: "AI_LIMIT",
+    });
+    expect(reserveAiCall).toHaveBeenCalledOnce();
+  });
+
+  // Regression: review 2026-10-01 — un .docx "zip bomb" podía agotar la memoria del servidor
+  it("rechaza un .docx que se inflaría a más de 20 MB sin descomprimirlo", async () => {
+    const zip = new JSZip();
+    zip.file("word/document.xml", "0".repeat(25 * 1024 * 1024));
+    const bomb = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE" });
+    expect(bomb.byteLength).toBeLessThan(1024 * 1024);
+    await expect(extractJdText("docx", bomb, noAi)).rejects.toMatchObject({ code: "JD_UNREADABLE" });
+  });
+
+  // Regression: review 2026-10-01 — un PDF con miles de páginas trababa la función hasta el timeout
+  it("rechaza un PDF de más de 50 páginas", async () => {
+    await expect(extractJdText("pdf", fixture("jd-60-paginas.pdf"), noAi)).rejects.toMatchObject({ code: "JD_UNREADABLE" });
   });
 });
 
@@ -45,6 +75,17 @@ describe("jd-input", () => {
     ["sin-extension", null],
   ])("detectSource(%s) = %s", (name, expected) => {
     expect(detectSource(name)).toBe(expected);
+  });
+
+  it("el MIME para Gemini sale de la extensión, no del navegador", () => {
+    expect(mimeTypeFor("captura.WEBP")).toBe("image/webp");
+    expect(mimeTypeFor("foto.jpg")).toBe("image/jpeg");
+    expect(mimeTypeFor("raro.exe")).toBe("application/octet-stream");
+  });
+
+  it("cuenta caracteres como Postgres (los emojis valen 1)", () => {
+    expect(charLength("🔥".repeat(150))).toBe(150);
+    expect("🔥".repeat(150).length).toBe(300);
   });
 
   it("normaliza espacios y saltos de línea", () => {
