@@ -131,5 +131,10 @@
     "pendingBody": "La leímos y la guardamos. La búsqueda automática de perfiles se activa en el próximo paso del proyecto.",
     "showJd": "Ver la JD completa",
     "hideJd": "Ocultar la JD"
+  },
+  "notFound": {
+    "title": "No encontramos esta página",
+    "body": "Puede que el link esté mal escrito o que el hunting ya no exista.",
+    "back": "Ir a mis huntings"
   }
 }
