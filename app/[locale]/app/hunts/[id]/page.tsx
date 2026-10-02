@@ -64,7 +64,10 @@ export default async function HuntPage({ params }: Params) {
       .from("candidates")
       .select("id, linkedin_url, name, headline, score, match_reasons, gaps, stage, outreach_short, outreach_long, notes")
       .eq("hunt_id", hunt.id)
-      .order("score", { ascending: false });
+      .order("score", { ascending: false })
+      // Desempate fijo: con puntajes iguales, el orden no cambia entre recargas (ISSUE-001, /qa 2026-10-02).
+      .order("name", { ascending: true })
+      .order("id", { ascending: true });
     candidates = (data ?? []) as CandidateRow[];
   }
   const above80 = candidates.filter((c) => (c.score ?? 0) >= 80).length;
