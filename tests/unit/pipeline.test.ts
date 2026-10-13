@@ -10,7 +10,7 @@ const mocks = vi.hoisted(() => ({
   searchPeople: vi.fn(),
 }));
 
-vi.mock("@/lib/providers/gemini", () => ({ generateJson: mocks.generateJson }));
+vi.mock("@/lib/providers/ai", () => ({ generateJson: mocks.generateJson }));
 vi.mock("@/lib/providers/tavily", () => ({ searchLinkedin: mocks.searchLinkedin }));
 vi.mock("@/lib/providers/exa", () => ({ isExaConfigured: mocks.exaConfigured, searchPeople: mocks.searchPeople }));
 vi.mock("@/lib/hunting/usage", () => ({ recordUsage: vi.fn(), remainingSearchesThisMonth: mocks.remainingSearches }));

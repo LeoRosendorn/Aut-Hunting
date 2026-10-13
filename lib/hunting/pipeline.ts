@@ -1,7 +1,7 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { isExaConfigured, searchPeople } from "@/lib/providers/exa";
-import { generateJson } from "@/lib/providers/gemini";
+import { generateJson } from "@/lib/providers/ai";
 import { searchLinkedin, type SearchResult } from "@/lib/providers/tavily";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { huntPlanSchema, planPrompt, scoringPrompt, scoringSchema, type HuntPlan } from "./ai-schemas";
@@ -59,8 +59,10 @@ export async function runHunt(huntId: string, deps = { admin: createAdminClient(
 async function execute(admin: SupabaseClient, hunt: HuntRow) {
   // 1) Leer la JD: requisitos + consultas + string booleano.
   const fixedCountry = hunt.country === "auto" ? null : hunt.country;
-  const plan = await generateJson(planPrompt(hunt.jd_text, hunt.profile_language, fixedCountry), huntPlanSchema);
-  await recordUsage(admin, hunt.user_id, "gemini");
+  let aiProvider: string | undefined;
+  const onProvider = (provider: string) => (aiProvider = provider);
+  const plan = await generateJson(planPrompt(hunt.jd_text, hunt.profile_language, fixedCountry), huntPlanSchema, { onProvider });
+  await recordUsage(admin, hunt.user_id, "llm", aiProvider);
   const countryCode = fixedCountry ?? plan.country_code;
 
   await setStatus(admin, hunt.id, "searching", {
@@ -82,8 +84,9 @@ async function execute(admin: SupabaseClient, hunt: HuntRow) {
       hunt.profile_language,
     ),
     scoringSchema,
+    { onProvider },
   );
-  await recordUsage(admin, hunt.user_id, "gemini");
+  await recordUsage(admin, hunt.user_id, "llm", aiProvider);
 
   const rows = scoring.scores
     .filter((s) => s.index < profiles.length && s.score > 0)

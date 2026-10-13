@@ -2,7 +2,7 @@ import "server-only";
 import JSZip from "jszip";
 import mammoth from "mammoth";
 import { extractText, getDocumentProxy } from "unpdf";
-import { readWithGemini } from "@/lib/providers/gemini";
+import { readJdWithAi } from "@/lib/providers/ai";
 import { HuntError } from "./errors";
 import { MIN_JD_CHARS, normalizeJd, type JdSource } from "./jd-input";
 
@@ -45,7 +45,7 @@ export async function extractJdText(source: Exclude<JdSource, "text">, bytes: Ui
 
 async function readWithAi(bytes: Uint8Array, mimeType: string, options: ExtractOptions) {
   if (!(await options.reserveAiCall())) throw new HuntError("AI_LIMIT");
-  return readWithGemini(bytes, mimeType);
+  return readJdWithAi(bytes, mimeType);
 }
 
 async function readPdfText(bytes: Uint8Array) {
