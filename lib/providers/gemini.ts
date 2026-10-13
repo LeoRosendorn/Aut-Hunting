@@ -4,32 +4,43 @@ import { z } from "zod";
 import { HuntError } from "@/lib/hunting/errors";
 
 // Alias que Google mantiene apuntando al Flash vigente de la capa gratuita (los nombres con versión
-// se retiran: gemini-2.5-flash ya devuelve 404). Si el primero está saturado (429/503) se usa el siguiente.
+// se retiran: gemini-2.5-flash ya devuelve 404). Si el primero está saturado o no responde a tiempo
+// (429, 5xx o timeout) se usa el siguiente.
 export const GEMINI_MODELS = (process.env.GEMINI_MODELS || "gemini-flash-latest,gemini-flash-lite-latest")
   .split(",")
   .map((m) => m.trim())
   .filter(Boolean);
 
 function isOverloaded(err: unknown) {
-  return err instanceof ApiError && (err.status === 429 || err.status === 503);
+  if (err instanceof ApiError) return err.status === 429 || err.status >= 500;
+  // Con demanda alta, gemini-flash-latest puede tardar más que el timeout aunque el lite responda en 1 s.
+  return err instanceof Error && (err.name === "AbortError" || err.name === "TimeoutError");
 }
 
-/** Llama a Gemini probando cada modelo de GEMINI_MODELS mientras el anterior esté saturado. */
-async function withModelFallback<T>(call: (model: string) => Promise<T>): Promise<T> {
+/**
+ * Llama a Gemini probando cada modelo de GEMINI_MODELS mientras el anterior esté saturado.
+ * Cada modelo tiene `perModelMs`; entre todos no pasan de `totalMs` (la función tiene un maxDuration).
+ */
+async function withModelFallback<T>(
+  call: (model: string, abortSignal: AbortSignal) => Promise<T>,
+  { perModelMs, totalMs }: { perModelMs: number; totalMs: number },
+): Promise<T> {
+  const deadline = AbortSignal.timeout(totalMs);
   let lastError: unknown;
   for (const model of GEMINI_MODELS) {
     try {
-      return await call(model);
+      return await call(model, AbortSignal.any([AbortSignal.timeout(perModelMs), deadline]));
     } catch (err) {
       lastError = err;
-      if (!isOverloaded(err)) break;
+      if (!isOverloaded(err) || deadline.aborted) break;
     }
   }
   throw lastError;
 }
-const GEMINI_TIMEOUT_MS = 30_000;
+// El lite lee una imagen en 1-2 s: se le dejan 15 s si el flash agotó sus 30.
+const GEMINI_READ_TIMEOUT = { perModelMs: 30_000, totalMs: 45_000 };
 // Puntuar 40 perfiles de una sola vez tarda más que leer una imagen.
-const GEMINI_PIPELINE_TIMEOUT_MS = 90_000;
+const GEMINI_PIPELINE_TIMEOUT = { perModelMs: 90_000, totalMs: 120_000 };
 
 export function isGeminiConfigured() {
   return Boolean(process.env.GEMINI_API_KEY);
@@ -70,16 +81,16 @@ export async function generateJson<T>(
   for (let attempt = 0; attempt < 2; attempt++) {
     let text: string;
     try {
-      const response = await withModelFallback((model) => ai.models.generateContent({
+      const response = await withModelFallback((model, abortSignal) => ai.models.generateContent({
         model,
         contents: prompt,
         config: {
           responseMimeType: "application/json",
           responseJsonSchema: toGeminiSchema(schema),
           temperature,
-          abortSignal: AbortSignal.timeout(GEMINI_PIPELINE_TIMEOUT_MS),
+          abortSignal,
         },
-      }));
+      }), GEMINI_PIPELINE_TIMEOUT);
       text = response.text ?? "";
     } catch (err) {
       console.error("Gemini generateJson", err instanceof ApiError ? err.status : err);
@@ -99,7 +110,7 @@ export async function generateJson<T>(
 export async function readWithGemini(bytes: Uint8Array, mimeType: string) {
   const ai = gemini();
   try {
-    const response = await withModelFallback((model) => ai.models.generateContent({
+    const response = await withModelFallback((model, abortSignal) => ai.models.generateContent({
       model,
       contents: [
         {
@@ -115,8 +126,8 @@ export async function readWithGemini(bytes: Uint8Array, mimeType: string) {
           ],
         },
       ],
-      config: { abortSignal: AbortSignal.timeout(GEMINI_TIMEOUT_MS) },
-    }));
+      config: { abortSignal },
+    }), GEMINI_READ_TIMEOUT);
     return response.text ?? "";
   } catch (err) {
     // 400: Gemini no pudo leer el archivo. 429/5xx/timeout: la capa gratuita está saturada.
