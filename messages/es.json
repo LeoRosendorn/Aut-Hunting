@@ -432,5 +432,22 @@
         }
       ]
     }
+  },
+  "admin": {
+    "title": "Panel interno",
+    "subtitle": "Consumo de los planes gratuitos y errores de hoy (UTC).",
+    "huntsToday": "Huntings hoy",
+    "done": "Terminados",
+    "inProgress": "En curso",
+    "errorRate": "Fallidos",
+    "tavilyRemainingToday": "Búsquedas Tavily que quedan hoy",
+    "tavilyMonth": "Tavily en el mes",
+    "exaMonth": "Búsquedas Exa en el mes",
+    "cacheEntries": "Búsquedas guardadas",
+    "cacheMissing": "Falta la migración",
+    "errorsToday": "Errores de hoy",
+    "aiToday": "IA hoy, por modelo",
+    "searchesToday": "Búsquedas hoy, por proveedor",
+    "none": "Nada por ahora."
   }
 }

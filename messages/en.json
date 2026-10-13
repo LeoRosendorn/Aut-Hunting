@@ -432,5 +432,22 @@
         }
       ]
     }
+  },
+  "admin": {
+    "title": "Internal dashboard",
+    "subtitle": "Free-tier usage and today's errors (UTC).",
+    "huntsToday": "Hunts today",
+    "done": "Finished",
+    "inProgress": "In progress",
+    "errorRate": "Failed",
+    "tavilyRemainingToday": "Tavily searches left today",
+    "tavilyMonth": "Tavily this month",
+    "exaMonth": "Exa searches this month",
+    "cacheEntries": "Cached searches",
+    "cacheMissing": "Migration missing",
+    "errorsToday": "Today's errors",
+    "aiToday": "AI today, by model",
+    "searchesToday": "Searches today, by provider",
+    "none": "Nothing yet."
   }
 }

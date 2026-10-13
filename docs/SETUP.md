@@ -48,6 +48,8 @@ npm run dev                  # http://localhost:3000
 2. Cargar `GEMINI_API_KEY` en `.env.local` y en Vercel → Environment Variables. Sin esta clave, la app acepta texto, PDF con texto, Word y TXT, y rechaza imágenes con un aviso claro.
 3. **Groq (opcional, recomendado):** <https://console.groq.com/keys> → **Create API Key** (capa gratuita, sin tarjeta). Cargar `GROQ_API_KEY`. Suma un segundo proveedor con cupo propio: si Gemini está saturado o sin cupo, el plan y el puntaje los resuelve Groq.
 
+**Panel interno:** cargar `ADMIN_EMAILS` (tu email; varios separados por coma) y entrar a `/es/app/admin`. Muestra huntings y errores de hoy, qué modelo de IA respondió, búsquedas que quedan hoy y búsquedas guardadas en la caché. Para cualquier otro email la página no existe (404).
+
 El orden es Gemini Flash-Lite → Groq → Gemini Flash. Un proveedor que da 429, 5xx o timeout queda en pausa 1-2 minutos. Qué modelo respondió queda en `usage_events.provider`.
 
 ## 6. SMTP gratuito (Brevo) para los emails de la cuenta
