@@ -69,7 +69,9 @@ export async function POST(request: NextRequest) {
     if ((await huntQuota(supabase)).remaining <= 0) return fail("DAILY_LIMIT");
     // Sin Exa, toda búsqueda nueva sale del cupo diario de Tavily: si ya no queda, se avisa antes
     // de descontarle el hunting a la usuaria. (Con Exa, el pipeline cae a Tavily solo si Exa falla.)
-    if (!isExaConfigured() && (await remainingSearchesToday(createAdminClient())) <= 0) {
+    // Si no se puede consultar el cupo, se deja pasar: el pipeline vuelve a chequearlo antes de buscar.
+    const searchesLeft = isExaConfigured() ? 1 : await remainingSearchesToday(createAdminClient()).catch(() => 1);
+    if (searchesLeft <= 0) {
       return fail("SEARCH_QUOTA_EXHAUSTED");
     }
 

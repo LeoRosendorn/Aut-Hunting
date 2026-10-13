@@ -138,15 +138,23 @@ describe("generateJson", () => {
     expect(JSON.parse(init.body).response_format.type).toBe("json_schema");
   });
 
-  it("un JSON que no cumple el esquema pasa al siguiente proveedor", async () => {
+  it("un JSON inválido se reintenta una vez con el mismo modelo", async () => {
+    generateContent.mockResolvedValueOnce({ text: "no es json" }).mockResolvedValueOnce({ text: '{"ok":true}' });
+
+    await expect(generateJson("prompt", okSchema)).resolves.toEqual({ ok: true });
+    expect(modelsCalled()).toEqual(["gemini-flash-lite-latest", "gemini-flash-lite-latest"]);
+  });
+
+  it("si un modelo devuelve dos veces JSON que no cumple el esquema, pasa al siguiente proveedor", async () => {
     vi.stubEnv("GROQ_API_KEY", "clave-groq");
-    generateContent.mockResolvedValueOnce({ text: '{"ok":"si"}' });
+    generateContent.mockResolvedValueOnce({ text: '{"ok":"si"}' }).mockResolvedValueOnce({ text: '{"ok":"si"}' });
     groqReplies("no es json");
+    groqReplies("{}");
     generateContent.mockResolvedValueOnce({ text: '{"ok":false}' });
 
     await expect(generateJson("prompt", okSchema)).resolves.toEqual({ ok: false });
-    expect(modelsCalled()).toEqual(["gemini-flash-lite-latest", "gemini-flash-latest"]);
-    expect(groqFetch).toHaveBeenCalledOnce();
+    expect(modelsCalled()).toEqual(["gemini-flash-lite-latest", "gemini-flash-lite-latest", "gemini-flash-latest"]);
+    expect(groqFetch).toHaveBeenCalledTimes(2);
   });
 
   it("un error de Groq (clave inválida) no corta el hunting: sigue con Gemini", async () => {

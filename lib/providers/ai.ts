@@ -103,15 +103,17 @@ export async function generateJson<T>(
   const jsonSchema = toGeminiSchema(schema);
   try {
     const { value, provider } = await runChain(JSON_PROVIDERS, budget, async (p, abortSignal) => {
-      const text = await p.run(prompt, jsonSchema, { temperature, abortSignal });
-      let parsed: z.ZodSafeParseResult<T>;
-      try {
-        parsed = schema.safeParse(JSON.parse(text));
-      } catch {
-        throw new InvalidJsonError();
+      // Un JSON inválido suele ser casual: se reintenta una vez con el mismo modelo antes de pasar al siguiente.
+      for (let attempt = 0; attempt < 2; attempt++) {
+        const text = await p.run(prompt, jsonSchema, { temperature, abortSignal });
+        try {
+          const parsed = schema.safeParse(JSON.parse(text));
+          if (parsed.success) return parsed.data;
+        } catch {
+          // JSON mal formado: se reintenta.
+        }
       }
-      if (!parsed.success) throw new InvalidJsonError();
-      return parsed.data;
+      throw new InvalidJsonError();
     });
     onProvider?.(provider);
     return value;
