@@ -8,12 +8,19 @@ const mocks = vi.hoisted(() => ({
   remainingSearches: vi.fn(async () => 900),
   exaConfigured: vi.fn(() => false),
   searchPeople: vi.fn(),
+  getCachedSearch: vi.fn<(admin: unknown, key: string) => Promise<unknown>>(async () => null),
+  putCachedSearch: vi.fn(async () => {}),
 }));
 
 vi.mock("@/lib/providers/ai", () => ({ generateJson: mocks.generateJson }));
 vi.mock("@/lib/providers/tavily", () => ({ searchLinkedin: mocks.searchLinkedin }));
 vi.mock("@/lib/providers/exa", () => ({ isExaConfigured: mocks.exaConfigured, searchPeople: mocks.searchPeople }));
-vi.mock("@/lib/hunting/usage", () => ({ recordUsage: vi.fn(), remainingSearchesThisMonth: mocks.remainingSearches }));
+vi.mock("@/lib/hunting/usage", () => ({ recordUsage: vi.fn(), remainingSearchesToday: mocks.remainingSearches }));
+vi.mock("@/lib/hunting/search-cache", () => ({
+  searchCacheKey: (query: string, country: string | null) => `${country}|${query}`,
+  getCachedSearch: mocks.getCachedSearch,
+  putCachedSearch: mocks.putCachedSearch,
+}));
 vi.mock("@/lib/supabase/admin", () => ({ createAdminClient: () => ({}) }));
 
 const { runHunt } = await import("@/lib/hunting/pipeline");
@@ -83,6 +90,8 @@ beforeEach(() => {
   mocks.remainingSearches.mockResolvedValue(900);
   mocks.exaConfigured.mockReturnValue(false);
   mocks.searchPeople.mockReset();
+  mocks.getCachedSearch.mockReset().mockResolvedValue(null);
+  mocks.putCachedSearch.mockReset();
 });
 
 describe("runHunt", () => {
@@ -135,7 +144,7 @@ describe("runHunt", () => {
     expect(mocks.generateJson).toHaveBeenCalledTimes(1);
   });
 
-  it("sin cupo mensual de búsquedas falla con SEARCH_QUOTA_EXHAUSTED sin llamar al buscador", async () => {
+  it("sin cupo de búsquedas de hoy falla con SEARCH_QUOTA_EXHAUSTED sin llamar al buscador", async () => {
     mocks.generateJson.mockResolvedValueOnce(plan);
     mocks.remainingSearches.mockResolvedValue(0);
     const { admin, hunt } = fakeAdmin();
@@ -179,5 +188,35 @@ describe("runHunt", () => {
     expect(mocks.searchPeople).toHaveBeenCalledWith(plan.queries[0], "AR");
     expect(mocks.searchLinkedin).toHaveBeenCalled();
     expect(upserts[0].map((r) => r.name)).toEqual(["Ana Paz", "Beto Ruiz"]);
+  });
+});
+
+describe("caché de búsquedas", () => {
+  it("una búsqueda guardada no llama al buscador ni gasta cupo", async () => {
+    mocks.generateJson
+      .mockResolvedValueOnce({ ...plan, queries: ["QA Automation Playwright Buenos Aires"] })
+      .mockResolvedValueOnce({ scores: [{ index: 0, score: 80, headline: "", reasons: [], gaps: [] }] });
+    mocks.getCachedSearch.mockImplementation(async (_admin: unknown, key: string) =>
+      key === "AR|QA Automation Playwright Buenos Aires" ? [result("ana", "Ana Paz - QA | LinkedIn")] : null,
+    );
+    mocks.searchLinkedin.mockResolvedValue([]);
+
+    const { admin, hunt, upserts } = fakeAdmin();
+    await runHunt("h1", { admin: admin as never });
+
+    expect(hunt.status).toBe("done");
+    expect(upserts[0].map((r) => r.name)).toEqual(["Ana Paz"]);
+    expect(mocks.searchLinkedin).not.toHaveBeenCalledWith("QA Automation Playwright Buenos Aires", "argentina");
+  });
+
+  it("guarda en la caché lo que devuelve el buscador", async () => {
+    mocks.generateJson
+      .mockResolvedValueOnce({ ...plan, queries: ["SDET Argentina"] })
+      .mockResolvedValueOnce({ scores: [{ index: 0, score: 80, headline: "", reasons: [], gaps: [] }] });
+    const found = [result("beto", "Beto Ruiz - SDET | LinkedIn")];
+    mocks.searchLinkedin.mockResolvedValue(found);
+
+    await runHunt("h1", { admin: fakeAdmin().admin as never });
+    expect(mocks.putCachedSearch).toHaveBeenCalledWith(expect.anything(), "AR|SDET Argentina", "tavily", found);
   });
 });

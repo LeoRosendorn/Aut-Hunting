@@ -7,7 +7,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { huntPlanSchema, planPrompt, scoringPrompt, scoringSchema, type HuntPlan } from "./ai-schemas";
 import { HuntError } from "./errors";
 import { normalizeLinkedinUrl, parseProfileTitle } from "./linkedin";
-import { recordUsage, remainingSearchesThisMonth } from "./usage";
+import { getCachedSearch, putCachedSearch, searchCacheKey } from "./search-cache";
+import { recordUsage, remainingSearchesToday } from "./usage";
 
 /** Con esta cantidad de perfiles únicos ya no se buscan más (se puntúan hasta 40, se guardan 30). */
 const TARGET_PROFILES = 40;
@@ -130,10 +131,19 @@ async function collectProfiles(admin: SupabaseClient, hunt: HuntRow, plan: HuntP
   for (const query of queries) {
     if (byUrl.size >= TARGET_PROFILES) break;
 
+    // La misma búsqueda hecha en los últimos 7 días no gasta cupo.
+    const cacheKey = searchCacheKey(query, countryCode);
+    const cached = await getCachedSearch(admin, cacheKey);
+    if (cached) {
+      addProfiles(byUrl, cached);
+      continue;
+    }
+
     if (useExa) {
       try {
         const results = await searchPeople(query, countryCode);
         await recordUsage(admin, hunt.user_id, "exa");
+        await putCachedSearch(admin, cacheKey, "exa", results);
         addProfiles(byUrl, results);
         continue;
       } catch (err) {
@@ -142,12 +152,13 @@ async function collectProfiles(admin: SupabaseClient, hunt: HuntRow, plan: HuntP
       }
     }
 
-    if ((await remainingSearchesThisMonth(admin)) <= 0) {
+    if ((await remainingSearchesToday(admin)) <= 0) {
       if (byUrl.size > 0) break; // con lo que hay se puede puntuar
       throw new HuntError("SEARCH_QUOTA_EXHAUSTED");
     }
     const results = await searchLinkedin(query, country);
     await recordUsage(admin, hunt.user_id, "tavily");
+    await putCachedSearch(admin, cacheKey, "tavily", results);
     addProfiles(byUrl, results);
   }
   return [...byUrl.values()].slice(0, TARGET_PROFILES);

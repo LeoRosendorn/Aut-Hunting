@@ -212,7 +212,8 @@
       "INTERNAL": "Algo deu errado. Tente de novo em alguns segundos.",
       "UNAUTHORIZED": "Sua sessão expirou. Entre novamente.",
       "AI_LIMIT": "Você usou as leituras com IA de hoje (imagens e PDFs escaneados). Cole o texto ou envie um PDF/Word com texto.",
-      "AI_BUSY": "A IA está sobrecarregada agora. Tente em alguns minutos ou cole o texto da JD."
+      "AI_BUSY": "A IA está sobrecarregada agora. Tente em alguns minutos ou cole o texto da JD.",
+      "SEARCH_QUOTA_EXHAUSTED": "As buscas gratuitas de hoje acabaram para todo o app. Renovam às 00:00 UTC; sua cota de huntings não foi descontada."
     }
   },
   "hunt": {
@@ -250,7 +251,7 @@
       "AI_NOT_CONFIGURED": "A IA ainda não está configurada no app.",
       "SEARCH_BUSY": "O buscador não respondeu. Tente criar o hunting de novo em alguns minutos.",
       "SEARCH_NOT_CONFIGURED": "O buscador ainda não está configurado no app.",
-      "SEARCH_QUOTA_EXHAUSTED": "A cota gratuita de buscas do mês acabou para todo o app. Renova no dia 1.",
+      "SEARCH_QUOTA_EXHAUSTED": "As buscas gratuitas de hoje acabaram para todo o app. Renovam às 00:00 UTC.",
       "NO_RESULTS": "Não encontramos perfis públicos para esta JD. Tente outro país ou use a string booleana no LinkedIn.",
       "INTERNAL": "Algo deu errado durante a busca. Tente criar o hunting de novo."
     },
