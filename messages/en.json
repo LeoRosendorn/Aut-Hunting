@@ -212,7 +212,8 @@
       "INTERNAL": "Something went wrong. Try again in a few seconds.",
       "UNAUTHORIZED": "Your session expired. Please log in again.",
       "AI_LIMIT": "You used today's AI readings (images and scanned PDFs). Paste the text or upload a PDF/Word with text.",
-      "AI_BUSY": "The AI is busy right now. Try again in a few minutes or paste the JD text."
+      "AI_BUSY": "The AI is busy right now. Try again in a few minutes or paste the JD text.",
+      "SEARCH_QUOTA_EXHAUSTED": "The app's free searches for today are used up. They reset at 00:00 UTC; your hunt quota wasn't charged."
     }
   },
   "hunt": {
@@ -250,7 +251,7 @@
       "AI_NOT_CONFIGURED": "The AI isn't configured in the app yet.",
       "SEARCH_BUSY": "The search engine didn't respond. Try creating the hunt again in a few minutes.",
       "SEARCH_NOT_CONFIGURED": "The search engine isn't configured in the app yet.",
-      "SEARCH_QUOTA_EXHAUSTED": "The app's free monthly search quota is used up. It resets on the 1st.",
+      "SEARCH_QUOTA_EXHAUSTED": "The app's free searches for today are used up. They reset at 00:00 UTC.",
       "NO_RESULTS": "We couldn't find public profiles for this JD. Try another country or use the boolean string on LinkedIn.",
       "INTERNAL": "Something went wrong during the search. Try creating the hunt again."
     },
@@ -431,5 +432,22 @@
         }
       ]
     }
+  },
+  "admin": {
+    "title": "Internal dashboard",
+    "subtitle": "Free-tier usage and today's errors (UTC).",
+    "huntsToday": "Hunts today",
+    "done": "Finished",
+    "inProgress": "In progress",
+    "errorRate": "Failed",
+    "tavilyRemainingToday": "Tavily searches left today",
+    "tavilyMonth": "Tavily this month",
+    "exaMonth": "Exa searches this month",
+    "cacheEntries": "Cached searches",
+    "cacheMissing": "Migration missing",
+    "errorsToday": "Today's errors",
+    "aiToday": "AI today, by model",
+    "searchesToday": "Searches today, by provider",
+    "none": "Nothing yet."
   }
 }

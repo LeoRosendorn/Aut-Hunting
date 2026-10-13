@@ -1,13 +1,14 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { isExaConfigured, searchPeople } from "@/lib/providers/exa";
-import { generateJson } from "@/lib/providers/gemini";
+import { generateJson } from "@/lib/providers/ai";
 import { searchLinkedin, type SearchResult } from "@/lib/providers/tavily";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { huntPlanSchema, planPrompt, scoringPrompt, scoringSchema, type HuntPlan } from "./ai-schemas";
 import { HuntError } from "./errors";
 import { normalizeLinkedinUrl, parseProfileTitle } from "./linkedin";
-import { recordUsage, remainingSearchesThisMonth } from "./usage";
+import { getCachedSearch, putCachedSearch, searchCacheKey } from "./search-cache";
+import { recordUsage, remainingSearchesToday } from "./usage";
 
 /** Con esta cantidad de perfiles únicos ya no se buscan más (se puntúan hasta 40, se guardan 30). */
 const TARGET_PROFILES = 40;
@@ -59,8 +60,10 @@ export async function runHunt(huntId: string, deps = { admin: createAdminClient(
 async function execute(admin: SupabaseClient, hunt: HuntRow) {
   // 1) Leer la JD: requisitos + consultas + string booleano.
   const fixedCountry = hunt.country === "auto" ? null : hunt.country;
-  const plan = await generateJson(planPrompt(hunt.jd_text, hunt.profile_language, fixedCountry), huntPlanSchema);
-  await recordUsage(admin, hunt.user_id, "gemini");
+  let aiProvider: string | undefined;
+  const onProvider = (provider: string) => (aiProvider = provider);
+  const plan = await generateJson(planPrompt(hunt.jd_text, hunt.profile_language, fixedCountry), huntPlanSchema, { onProvider });
+  await recordUsage(admin, hunt.user_id, "llm", aiProvider);
   const countryCode = fixedCountry ?? plan.country_code;
 
   await setStatus(admin, hunt.id, "searching", {
@@ -82,8 +85,9 @@ async function execute(admin: SupabaseClient, hunt: HuntRow) {
       hunt.profile_language,
     ),
     scoringSchema,
+    { onProvider },
   );
-  await recordUsage(admin, hunt.user_id, "gemini");
+  await recordUsage(admin, hunt.user_id, "llm", aiProvider);
 
   const rows = scoring.scores
     .filter((s) => s.index < profiles.length && s.score > 0)
@@ -127,10 +131,19 @@ async function collectProfiles(admin: SupabaseClient, hunt: HuntRow, plan: HuntP
   for (const query of queries) {
     if (byUrl.size >= TARGET_PROFILES) break;
 
+    // La misma búsqueda hecha en los últimos 7 días no gasta cupo.
+    const cacheKey = searchCacheKey(query, countryCode);
+    const cached = await getCachedSearch(admin, cacheKey);
+    if (cached) {
+      addProfiles(byUrl, cached);
+      continue;
+    }
+
     if (useExa) {
       try {
         const results = await searchPeople(query, countryCode);
         await recordUsage(admin, hunt.user_id, "exa");
+        await putCachedSearch(admin, cacheKey, "exa", results);
         addProfiles(byUrl, results);
         continue;
       } catch (err) {
@@ -139,12 +152,13 @@ async function collectProfiles(admin: SupabaseClient, hunt: HuntRow, plan: HuntP
       }
     }
 
-    if ((await remainingSearchesThisMonth(admin)) <= 0) {
+    if ((await remainingSearchesToday(admin)) <= 0) {
       if (byUrl.size > 0) break; // con lo que hay se puede puntuar
       throw new HuntError("SEARCH_QUOTA_EXHAUSTED");
     }
     const results = await searchLinkedin(query, country);
     await recordUsage(admin, hunt.user_id, "tavily");
+    await putCachedSearch(admin, cacheKey, "tavily", results);
     addProfiles(byUrl, results);
   }
   return [...byUrl.values()].slice(0, TARGET_PROFILES);

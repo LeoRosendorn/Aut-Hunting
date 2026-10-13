@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import type { HuntPlan } from "@/lib/hunting/ai-schemas";
 import { HuntError } from "@/lib/hunting/errors";
 import { fitMessage, LONG_MAX, outreachPrompt, outreachSchema, SHORT_MAX } from "@/lib/hunting/outreach";
-import { generateJson } from "@/lib/providers/gemini";
+import { generateJson, OUTREACH_BUDGET } from "@/lib/providers/ai";
 import { createClient } from "@/lib/supabase/server";
 
 export const maxDuration = 60;
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest, ctx: RouteContext<"/api/candida
         candidate,
       }),
       outreachSchema,
-      { temperature: 0.7 },
+      { temperature: 0.7, budget: OUTREACH_BUDGET },
     );
     const message = { short: fitMessage(draft.short, SHORT_MAX), long: fitMessage(draft.long, LONG_MAX) };
 

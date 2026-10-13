@@ -16,6 +16,9 @@ import {
   type JdSource,
 } from "@/lib/hunting/jd-input";
 import { consumeAiCall, huntQuota, isDailyLimitError } from "@/lib/hunting/quota";
+import { remainingSearchesToday } from "@/lib/hunting/usage";
+import { isExaConfigured } from "@/lib/providers/exa";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
 // La respuesta sale enseguida; la búsqueda sigue en segundo plano con after() hasta 300 s (Vercel Hobby).
@@ -32,6 +35,7 @@ const STATUS: Partial<Record<HuntErrorCode, number>> = {
   INTERNAL: 500,
   AI_NOT_CONFIGURED: 503,
   AI_BUSY: 503,
+  SEARCH_QUOTA_EXHAUSTED: 503,
 };
 
 function fail(code: HuntErrorCode) {
@@ -63,6 +67,13 @@ export async function POST(request: NextRequest) {
     // Chequeo rápido para no leer archivos ni gastar IA en vano. El límite real lo aplica
     // el trigger de la base al insertar (también frente a pedidos simultáneos).
     if ((await huntQuota(supabase)).remaining <= 0) return fail("DAILY_LIMIT");
+    // Sin Exa, toda búsqueda nueva sale del cupo diario de Tavily: si ya no queda, se avisa antes
+    // de descontarle el hunting a la usuaria. (Con Exa, el pipeline cae a Tavily solo si Exa falla.)
+    // Si no se puede consultar el cupo, se deja pasar: el pipeline vuelve a chequearlo antes de buscar.
+    const searchesLeft = isExaConfigured() ? 1 : await remainingSearchesToday(createAdminClient()).catch(() => 1);
+    if (searchesLeft <= 0) {
+      return fail("SEARCH_QUOTA_EXHAUSTED");
+    }
 
     const file = form.get("file");
     let jdText: string;
