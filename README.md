@@ -1,36 +1,52 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI-Hunting
 
-## Getting Started
+Aplicación web para reclutadoras: subís una descripción de puesto y devuelve hasta 30 perfiles públicos de LinkedIn ordenados por afinidad, con puntaje, motivos, brechas y un string booleano para seguir buscando a mano.
 
-First, run the development server:
+En producción: <https://aihunting.vercel.app>
+
+> **Cómo se construyó:** el código lo generó [Claude Code](https://claude.com/claude-code). Leonardo Rosendorn definió el producto y sus restricciones, decidió el spec, dirigió al agente y validó el resultado. Por eso los commits llevan `Co-Authored-By: Claude`.
+
+## Qué hace
+
+- Lee la descripción en texto, PDF, Word o imagen.
+- Extrae los requisitos y arma las búsquedas.
+- Busca perfiles públicos y los puntúa con un LLM.
+- Genera un mensaje de contacto personalizado, que la reclutadora copia y envía ella.
+- Sigue a cada candidato por etapas, desde encontrado hasta entrevista.
+
+La app no hace scraping ni automatiza nada dentro de LinkedIn: solo trabaja con búsquedas sobre perfiles públicos.
+
+## Stack
+
+Next.js y TypeScript, Supabase (autenticación y Postgres) y Vercel. Para la IA usa Gemini y Groq, y para la búsqueda, Exa con Tavily de respaldo. Todo corre sobre planes gratuitos.
+
+## Arquitectura
+
+| Tema | Decisión | Dónde |
+|---|---|---|
+| Ejecución | La ruta responde 202 y el trabajo sigue en segundo plano con `after()`. La interfaz lee el estado del hunting. | `app/api/hunts/[id]/run/route.ts` |
+| Concurrencia | Un update condicional de `pending` a `parsing` actúa como claim atómico, así dos ejecuciones no se pisan. | `lib/hunting/pipeline.ts` |
+| Proveedores | El router prueba Gemini lite, Groq y Gemini Flash, con timeout por intento y presupuesto total. Ante 429, 5xx o timeout, el proveedor queda en pausa uno o dos minutos. | `lib/providers/ai.ts` |
+| Salida del LLM | Cada respuesta se valida con Zod. Un JSON inválido se reintenta una vez con el mismo modelo antes de cambiar de proveedor. | `lib/providers/ai.ts` |
+| Puntaje | El modelo referencia los perfiles por índice y nunca devuelve nombres ni URLs, así que no puede inventar candidatos. | `lib/hunting/ai-schemas.ts` |
+| Datos | Row Level Security en Postgres. Los cupos por usuario se aplican en la base. | `supabase/migrations/` |
+| Búsquedas | Una consulta normalizada en el mismo país se reutiliza durante 7 días y no gasta cupo. | `lib/hunting/search-cache.ts` |
+
+## Cómo correrlo
 
 ```bash
+npm install
+cp .env.example .env.local   # completar las variables
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+La puesta en marcha completa está en [`docs/SETUP.md`](docs/SETUP.md) y el spec del producto, en [`docs/SPEC.md`](docs/SPEC.md).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tests
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm test          # tests unitarios con Vitest
+npm run check     # i18n, lint, tipos y tests
+```
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Los tests usan proveedores simulados: comprueban el manejo de errores, no la calidad del puntaje.
